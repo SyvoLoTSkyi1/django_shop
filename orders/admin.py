@@ -12,5 +12,3 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(Discount)
 class DiscountAdmin(admin.ModelAdmin):
     ...
-
-

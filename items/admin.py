@@ -20,7 +20,8 @@ class ItemAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     filter_horizontal = ('items',)
-    list_display = ('view_product_image', 'name', 'price', 'sku', 'created_at',)
+    list_display = ('view_product_image', 'name',
+                    'price', 'sku', 'created_at',)
     list_filter = ('price',)
 
     def view_product_image(self, obj):
