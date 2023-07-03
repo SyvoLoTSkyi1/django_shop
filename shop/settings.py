@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     # own apps
     'items',
     'orders',
-    'feedbacks'
+    'feedbacks',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,7 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGOUT_REDIRECT_URL = reverse_lazy('login') # noqa
+LOGIN_REDIRECT_URL = 'items'
+LOGIN_URL = 'login'
