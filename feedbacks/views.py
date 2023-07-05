@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from feedbacks.model_forms import FeedbackModelForm
+from feedbacks.model_forms import FeedbackModelForm, check_text
 from feedbacks.models import Feedback
 
 
@@ -22,12 +22,3 @@ def feedbacks(request, *args, **kwargs):
     }
     return render(request, 'feedbacks/index.html', context=context)
 
-
-def check_text(text):
-
-    clear_text = ''
-    for i in text:
-        if i.isalnum() or i == ' ':
-            clear_text += i
-
-    return clear_text

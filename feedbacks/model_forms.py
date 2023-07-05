@@ -11,3 +11,14 @@ class FeedbackModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['user'].widget = forms.HiddenInput()
         self.fields['user'].initial = user
+
+
+def check_text(text):
+
+    clear_text = ''
+    for i in text:
+        if i.isalnum() or i == ' ':
+            clear_text += i
+
+    return clear_text
+
