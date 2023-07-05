@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import environ
 from pathlib import Path
 
+from django.urls import reverse_lazy
 
 env = environ.Env(
     # set casting, default value
@@ -137,6 +138,6 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGOUT_REDIRECT_URL = reverse_lazy('login') # noqa
+LOGOUT_REDIRECT_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = 'items'
 LOGIN_URL = 'login'
