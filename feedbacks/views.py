@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from feedbacks.model_forms import FeedbackModelForm, check_text
 from feedbacks.models import Feedback
@@ -14,6 +15,7 @@ def feedbacks(request, *args, **kwargs):
             new_feedback = form.save(commit=False)
             new_feedback.text = check_text(form.cleaned_data.get("text"))
             new_feedback.save()
+            return redirect(reverse('main'))
     else:
         form = FeedbackModelForm(user=user)
     context = {

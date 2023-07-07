@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sign Up</title>
-</head>
-<body>
-<h1>Sign Up</h1>
+{% extends 'base.html' %}
 
-<div>
-    <form method="post">
-        {% csrf_token %}
-        {% for field in form %}
-        <label>{{ field.label }}</label>
-        {{ field }}
+{% block content %}
+    <section class="sign up">
+        <div class="container" align="center">
+            <h1>Sign Up</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <label>{{ field.label }}</label>
+                    {{ field }}
 
-        {% endfor %}
-        <input type="submit" value="Sign Up">
-    </form>
-<p>
-    {{ form.errors }}
-</p>
-</div>
-</body>
-</html>
+                    {% endfor %}
+                    <input type="submit" value="Sign Up">
+                </form>
+                <p>
+                    {{ form.errors }}
+                </p>
+        </div>
+    </section>
+{% endblock content %}
