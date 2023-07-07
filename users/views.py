@@ -10,7 +10,7 @@ class LoginView(TemplateView):
 
     def get_context_data(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'form': kwargs.get('form') or LoginForm})
+        context.update({'form': kwargs.get('form') or LoginForm}) # noqa
         return context
 
     def post(self, request, *args, **kwargs):
@@ -38,5 +38,3 @@ class SignUpView(TemplateView):
             new_user = form.save()
             login(request, new_user)
         return self.get(request, form=form, *args, **kwargs)
-
-

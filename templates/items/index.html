@@ -1,29 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Items</title>
-</head>
-<body>
-<h1>Items</h1>
+{% extends 'base.html' %}
 
-{% for item in items %}
-    <p>
-        <span>Title: {{ item.name }}</span>
-        <span>Description: {{ item.description }}</span>
-        <span>Category: {{ item.category.name }}</span>
-    </p>
-{% endfor %}
-<div>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for field in form %}
-        <label>{{ field.label }}</label>
-        {{ field }}
-
-        {% endfor %}
-        <input type="submit" value="Create Item">
-    </form>
-</div>
-</body>
-</html>
+{% block content %}
+    <section class="items">
+      <div class="container" align="center">
+            <h2>Items</h2>
+            <div class="col">
+                {% for item in items %}
+                    <div class="col {% if item.items.exists %}col-lg-6{% else %}col-lg-3{% endif %}">
+                        <div class="mb-3">
+                            <div class="card border-primary"
+                                 style="width: 18rem;">
+                                <img src="{{ item.image.url }}"
+                                     class="product-image p-3"
+                                     alt="{{ image.name }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.name }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ item.category.name }}</h6>
+                                    <p class="card-text">
+                                        {{ item.description|truncatechars:100 }}<br>
+                                        <br>
+                                        {% if item.items.exists %}
+                                            <p>Including:</p>
+                                            {% for sub in item.items.iterator %}
+                                                    <p>{{ sub.name }}</p>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </p>
+                                    <a href="#" class="btn btn-primary">Buy
+                                        it</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock content %}

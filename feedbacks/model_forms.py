@@ -21,4 +21,3 @@ def check_text(text):
             clear_text += i
 
     return clear_text
-
