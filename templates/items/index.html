@@ -26,8 +26,13 @@
                                             {% endfor %}
                                         {% endif %}
                                     </p>
-                                    <a href="#" class="btn btn-primary">Buy
-                                        it</a>
+                                    <div class="h3">
+                                    ${{ item.price }}
+                                </div>
+                                <a href="{% url 'item_detail' item.id  %}">Details...</a>
+                                <a href="#" class="btn btn-primary">Add to
+                                    cart</a>
+                            </div>
                                 </div>
                             </div>
                         </div>

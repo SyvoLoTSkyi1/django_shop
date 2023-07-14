@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="col">
+                <div class="col {% if item.items.exists %}col-lg-6{% else %}col-lg-3{% endif %}">
+                    <div class="card mb-3">
+                        <div class="card border-primary"
+                                 style="width: 20.2rem;">
+                                <img src="{{ item.image.url }}"
+                                     class="product-image p-3"
+                                     alt="{{ image.name }}">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            <p class="small">{{ item.category.name }}</p>
+                            <p class="small">{{ item.sku }}</p>
+                            <p class="card-text">
+                                {{ item.description }}
+                            </p>
+                            {% if item.items.exists %}
+                                <p>Including:</p>
+                                {% for sub in item.items.iterator %}
+                                    <div class="d-inline-flex flex-column rounded border p-2">
+                                        <p>{{ sub.name }}</p>
+                                        <figure class="text-center d-inline">
+                                            <img src="{{ sub.image.url }}"
+                                                 class="product-image p-3"
+                                                 alt="{{ item.name }}">
+                                        </figure>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="h3">
+                                ${{ item.price }}
+                            </div>
+                            <a href="#" class="btn btn-primary">Add to
+                                cart</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+{% endblock content %}
