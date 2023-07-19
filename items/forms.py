@@ -63,6 +63,5 @@ class ImportForm(forms.Form):
                 raise ValidationError(error)
         return items_list
 
-
     def save(self):
         Item.objects.bulk_create(self.cleaned_data['csv_file'])

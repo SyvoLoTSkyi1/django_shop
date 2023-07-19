@@ -41,13 +41,28 @@ class Order(PKMixin):
         null=True
 
     )
-    items = models.ManyToManyField("items.Item")
+    items = models.ManyToManyField(
+        "items.Item",
+        through='orders.OrderItemRelation'
+    )
     discount = models.ForeignKey(
         Discount,
         on_delete=models.SET_NULL,
         blank=True,
         null=True
     )
+    is_active = models.BooleanField(default=True)
+    is_paid = models.BooleanField(default=False)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user'],
+                                               condition=models.Q(is_active=True),
+                                               name='unique_is_active')
+                       ]
+
+    @property
+    def is_current_order(self):
+        return self.is_active and not self.is_paid
 
     def count_total_amount(self):
         if self.discount:
@@ -62,3 +77,19 @@ class Order(PKMixin):
 
     def __str__(self):
         return f'{self.count_total_amount()}'
+
+
+class OrderItemRelation(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE
+    )
+    item = models.ForeignKey(
+        'items.Item',
+        on_delete=models.CASCADE,
+        related_name='orders'
+    )
+    quantity = models.PositiveSmallIntegerField(default=1)
+
+    class Meta:
+        unique_together = ('order', 'item')

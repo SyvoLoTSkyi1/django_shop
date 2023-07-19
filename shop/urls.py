@@ -21,13 +21,15 @@ from items.urls import urlpatterns as items_urlpatterns
 from feedbacks.urls import urlpatterns as feedbacks_urlpatterns
 from users.urls import urlpatterns as users_urlpatterns
 from main.urls import urlpatterns as main_urlpatterns
+from orders.urls import urlpatterns as orders_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(items_urlpatterns)),
     path('', include(feedbacks_urlpatterns)),
     path('', include(users_urlpatterns)),
-    path('', include(main_urlpatterns))
+    path('', include(main_urlpatterns)),
+    path('', include(orders_urlpatterns))
 ]
 
 if settings.DEBUG:
