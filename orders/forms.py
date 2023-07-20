@@ -8,10 +8,10 @@ class UpdateCartOrderForm(forms.Form):
     item = forms.UUIDField(required=True)
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, *kwargs)
         self.instance = kwargs['instance']
 
-    def clean_product_id(self):
+    def clean_item_id(self):
         try:
             item = Item.objects.get(id=self.cleaned_data['item'])
         except Item.DoesNotExist:
@@ -34,10 +34,10 @@ class RecalculateCartForm(forms.Form):
 
     def save(self):
         for k, v in self.cleaned_data.items():
-            if k.startswith('product_'):
+            if k.startswith('item_'):
                 index = k.split('_')[-1]
                 self.instance.items.through.objects\
-                    .filter(product_id=v)\
+                    .filter(item_id=v)\
                     .update(quantity=self.cleaned_data[f'quantity_{index}'])
 
         return self.instance

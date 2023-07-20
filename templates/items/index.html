@@ -30,8 +30,11 @@
                                     ${{ item.price }}
                                 </div>
                                 <a href="{% url 'item_detail' item.id  %}">Details...</a>
-                                <a href="#" class="btn btn-primary">Add to
-                                    cart</a>
+                                <form method="post" action="{% url 'update_cart' 'add' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ item_id }}" name="item">
+                                    <input type="submit" class="btn btn-primary" value="Add to cart">
+                                </form>
                             </div>
                                 </div>
                             </div>

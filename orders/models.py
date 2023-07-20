@@ -1,3 +1,4 @@
+import decimal
 from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -64,19 +65,23 @@ class Order(PKMixin):
     def is_current_order(self):
         return self.is_active and not self.is_paid
 
-    def count_total_amount(self):
-        if self.discount:
-            if self.discount.discount_type == DiscountTypes.VALUE:
-                return (self.total_amount - self.discount.amount).quantize(
-                    Decimal('.00'))
-            elif self.discount.discount_type == DiscountTypes.PERCENT:
-                return (self.total_amount - ((
-                    self.total_amount * self.discount.amount) / 100)).quantize(
-                    Decimal('.00'))  # noqa
-        return self.total_amount
+    # def get_total_amount(self):
+    #     total_amount = 0
+    #     for item_relation in self.get_items_through().iterator():
+    #         total_amount += item_relation.full_price * item_relation.item.curs  # noqa
+    #
+    #     if self.discount:
+    #         total_amount = (
+    #             total_amount - self.discount.amount
+    #             if self.discount.discount_type == DiscountTypes.VALUE else
+    #             total_amount - (
+    #                     self.total_amount / 100 * self.discount.amount
+    #             )
+    #         ).quantize(decimal.Decimal('.01'))
+    #     return total_amount
 
-    def __str__(self):
-        return f'{self.count_total_amount()}'
+    # def __str__(self):
+    #     return f'{self.count_total_amount()}'
 
 
 class OrderItemRelation(models.Model):
