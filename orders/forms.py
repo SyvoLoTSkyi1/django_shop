@@ -26,7 +26,7 @@ class UpdateCartOrderForm(forms.Form):
 class RecalculateCartForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, *kwargs)
         self.instance = kwargs['instance']
         self.fields = {k: forms.IntegerField() if k.startswith(
             'quantity') else forms.UUIDField() for k in self.data.keys() if

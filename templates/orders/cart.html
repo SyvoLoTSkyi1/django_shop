@@ -5,12 +5,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-lg-6 offset-lg-3">
-                    {% if order %}
+                    {% if order.items.exists %}
                         <table class="table">
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">item</th>
+                                <th scope="col">Item</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">Amount</th>
@@ -23,7 +23,7 @@
                                   id="recalculateCart">
                                 {% csrf_token %}
                                 {% for item_relation in items_relation.iterator %}
-
+                                     <tr>
                                         <th scope="row">{{ forloop.counter }}</th>
                                         <td>{{ item_relation.item.name }}</td>
                                         <td>
@@ -33,7 +33,7 @@
                                                    name="quantity_{{ forloop.counter0 }}">
                                             <input type="hidden"
                                                    name="item_{{ forloop.counter0 }}"
-                                                   value="{{ item_relation.item_id }}">
+                                                   value="{{ item_relation.item.id }}">
                                         </td>
                                         <td>{{ item_relation.item.price }}</td>
                                         <td>{{ item_relation.full_price }}</td>
@@ -46,7 +46,7 @@
                                                    value="X"
                                                    formaction="{% url 'update_cart' 'remove' %}">
                                         </td>
-
+                                     </tr>
                                 {% endfor %}
                                 <tr>
                                     <td>
@@ -68,8 +68,6 @@
                     {% else %}
                         <h3>Your cart is empty.</h3>
                         <p>Goto <a href="{% url 'items' %}">items</a> page and add something good to cart.</p>
-                        <p>Goto <a href="{% url 'items' %}">items</a>
-                            page and add something good to cart.</p>
                     {% endif %}
                 </div>
             </div>
