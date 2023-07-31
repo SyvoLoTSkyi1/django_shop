@@ -3,3 +3,4 @@ flake8==5.0.4
 django-environ==0.10.0
 Pillow==9.5.0
 django_extensions==3.2.3
+django-lifecycle==1.0.0
