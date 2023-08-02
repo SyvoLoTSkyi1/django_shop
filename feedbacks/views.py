@@ -6,6 +6,7 @@ from feedbacks.model_forms import FeedbackModelForm, check_text
 from feedbacks.models import Feedback
 
 
+
 @login_required
 def feedbacks(request, *args, **kwargs):
     user = request.user
