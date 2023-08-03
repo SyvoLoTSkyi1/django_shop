@@ -50,12 +50,14 @@ INSTALLED_APPS = [
     # external app
     'django_extensions',
     'django_celery_results',
+    'django_celery_beat',
     # own apps
     'items',
     'orders',
     'feedbacks',
     'users',
-    'main'
+    'main',
+    'currencies'
 ]
 
 MIDDLEWARE = [

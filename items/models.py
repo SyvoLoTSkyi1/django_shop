@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 from shop.mixins.models_mixins import PKMixin
+from shop.model_choices import Currency
 
 
 def upload_image(instance, filename):
@@ -17,6 +18,11 @@ class Item(PKMixin):
     description = models.TextField()
     price = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1)])
+    currency = models.CharField(
+        max_length=3,
+        choices=Currency.choices,
+        default=Currency.USD
+    )
     sku = models.CharField(
         max_length=32,
         blank=True,
