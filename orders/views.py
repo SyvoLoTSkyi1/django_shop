@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import F
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, RedirectView
 
 from orders.forms import RecalculateCartForm, UpdateCartOrderForm
@@ -25,7 +24,8 @@ class CartView(GetCurrentOrderMixin, TemplateView):
 
     def get_queryset(self):
         return self.get_object().items.through.objects \
-            .select_related('item').annotate(full_price=F('item__price') * F('quantity'))
+            .select_related('item')\
+            .annotate(full_price=F('item__price') * F('quantity'))
 
 
 class UpdateCartView(GetCurrentOrderMixin, RedirectView):

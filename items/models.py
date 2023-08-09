@@ -1,6 +1,5 @@
 from os import path
 
-from django.core.validators import MinValueValidator
 from django.db import models
 
 from shop.constants import MAX_DIGITS, DECIMAL_PLACES

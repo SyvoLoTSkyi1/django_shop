@@ -7,5 +7,7 @@ urlpatterns = [
     re_path(r'cart/(?P<action>add|remove)/',
             UpdateCartView.as_view(),
             name='update_cart'),
-    path('recalculate/', RecalculateCartView.as_view(), name='recalculate_cart')
+    path('recalculate/',
+         RecalculateCartView.as_view(),
+         name='recalculate_cart')
 ]

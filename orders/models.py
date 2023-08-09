@@ -1,9 +1,10 @@
-import decimal
-from decimal import Decimal
+
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import F, When, Case, Sum
-from django_lifecycle import LifecycleModelMixin, hook, AFTER_CREATE, AFTER_UPDATE
+from django_lifecycle import LifecycleModelMixin, \
+    hook, AFTER_UPDATE
 
 from shop.constants import MAX_DIGITS, DECIMAL_PLACES
 from shop.mixins.models_mixins import PKMixin
@@ -58,10 +59,11 @@ class Order(LifecycleModelMixin, PKMixin):
     is_paid = models.BooleanField(default=False)
 
     class Meta:
-        constraints = [models.UniqueConstraint(fields=['user'],
-                                               condition=models.Q(is_active=True),
-                                               name='unique_is_active')
-                       ]
+        constraints = [models.UniqueConstraint(
+            fields=['user'],
+            condition=models.Q(is_active=True),
+            name='unique_is_active')
+        ]
 
     @property
     def is_current_order(self):
