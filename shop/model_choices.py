@@ -7,6 +7,6 @@ class DiscountTypes(IntegerChoices):
 
 
 class Currency(TextChoices):
-    UAH = 0, 'UAH'
-    USD = 1, 'USD'
-    EUR = 2, 'EUR'
+    UAH = 'UAH', 'UAH'
+    USD = 'USD', 'USD'
+    EUR = 'EUR', 'EUR'

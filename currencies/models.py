@@ -11,8 +11,16 @@ class CurrencyHistory(PKMixin):
         choices=Currency.choices,
         default=Currency.USD
     )
-    curs = models.DecimalField(
+    buy = models.DecimalField(
         max_digits=MAX_DIGITS,
         decimal_places=DECIMAL_PLACES,
         default=1
     )
+    sale = models.DecimalField(
+        max_digits=MAX_DIGITS,
+        decimal_places=DECIMAL_PLACES,
+        default=1
+    )
+
+    def __str__(self):
+        return f'{self.currency} {self.sale} {self.created_at}'

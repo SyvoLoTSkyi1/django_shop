@@ -3,6 +3,7 @@ from os import path
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from shop.constants import MAX_DIGITS, DECIMAL_PLACES
 from shop.mixins.models_mixins import PKMixin
 from shop.model_choices import Currency
 
@@ -16,8 +17,16 @@ def upload_image(instance, filename):
 class Item(PKMixin):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    price = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)])
+    price = models.DecimalField(
+        max_digits=MAX_DIGITS,
+        decimal_places=DECIMAL_PLACES,
+        default=0
+    )
+    actual_price = models.DecimalField(
+        max_digits=MAX_DIGITS,
+        decimal_places=DECIMAL_PLACES,
+        default=0
+    )
     currency = models.CharField(
         max_length=3,
         choices=Currency.choices,
