@@ -1,24 +1,21 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render
 import csv
 
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView
+from django.views.generic import DetailView, FormView, ListView
 
 from items.forms import ImportForm
 from items.models import Item
 from shop.mixins.views_mixins import StaffUserCheck
 
 
-def items(request, *args, **kwargs):
+class ItemsView(ListView):
+    model = Item
 
-    context = {
-        'items': Item.objects.all(),
-
-    }
-    return render(request, 'items/index.html', context=context)
+    def get_queryset(self):
+        return self.model.get_items()
 
 
 class ItemDetail(DetailView):

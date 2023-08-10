@@ -1,5 +1,6 @@
 from os import path
 
+from django.core.cache import cache
 from django.db import models
 
 from shop.constants import MAX_DIGITS, DECIMAL_PLACES
@@ -44,6 +45,20 @@ class Item(PKMixin):
 
     def __str__(self):
         return f"{self.name} | {self.category}"
+
+    @classmethod
+    def _cache_key(cls):
+        return 'items'
+
+    @classmethod
+    def get_items(cls):
+        items = cache.get(cls._cache_key())
+        print('BEFORE ', items)
+        if not items:
+            items = Item.objects.all()
+            cache.set(cls._cache_key(), items)
+            print('AFTER ', items)
+        return items
 
 
 class Category(PKMixin):
