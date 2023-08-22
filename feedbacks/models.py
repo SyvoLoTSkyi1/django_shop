@@ -19,7 +19,7 @@ class Feedback(PKMixin):
     )
 
     def __str__(self):
-        return f'{self.user.username} | {self.text} | {self.rating}'
+        return f'{self.user.email} | {self.text} | {self.rating}'
 
     @classmethod
     def _cache_key(cls):
