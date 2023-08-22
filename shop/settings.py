@@ -58,7 +58,8 @@ INSTALLED_APPS = [
     'feedbacks',
     'users',
     'main',
-    'currencies'
+    'currencies',
+    'wishlist',
 ]
 
 MIDDLEWARE = [

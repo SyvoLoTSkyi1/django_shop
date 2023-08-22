@@ -2,16 +2,16 @@
 
 {% block content %}
     <section class="items">
-      <div class="container" align="center">
+      <div class="container">
             <h2>Items</h2>
-            <div class="col">
+            <div class="row">
                 {% for item in object_list %}
                     <div class="col {% if item.items.exists %}col-lg-6{% else %}col-lg-3{% endif %}">
                         <div class="mb-3">
                             <div class="card border-primary"
-                                 style="width: 25rem;">
+                                 style="width: 23rem; height: 45rem;">
                                 <img src="{{ item.image.url }}"
-                                     class="product-image p-3"
+                                     class="product-image p-5"
                                      alt="{{ image.name }}">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ item.name }}</h5>
@@ -30,6 +30,11 @@
                                     ${{ item.price }}
                                 </div>
                                 <a href="{% url 'item_detail' item.id  %}">Details...</a>
+                                <form method="post" action="{% url 'update_wishlist' 'add' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ item.id }}" name="item">
+                                    <input type="submit" class="btn btn-primary" value="Add to wishlist">
+                                </form>
                                 <form method="post" action="{% url 'update_cart' 'add' %}">
                                     {% csrf_token %}
                                     <input type="hidden" value="{{ item.id }}" name="item">
