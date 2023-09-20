@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -14,8 +15,11 @@ def feedbacks(request, *args, **kwargs):
         if form.is_valid():
             new_feedback = form.save(commit=False)
             new_feedback.text = check_text(form.cleaned_data.get("text"))
+            messages.success(request, message='Thank you for your feedback!')
             new_feedback.save()
-            return redirect(reverse('main'))
+        else:
+            messages.warning(request, message='Something went wrong!')
+
     else:
         form = FeedbackModelForm(user=user)
     context = {

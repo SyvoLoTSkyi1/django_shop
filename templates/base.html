@@ -9,9 +9,14 @@
     <link href="{% static 'style.css' %}" rel="stylesheet">
 </head>
 <body>
+{% block messages %}
+    {% include 'parts_html/messages.html' %}
+{% endblock messages %}
+
 {% block header %}
     {% include "parts_html/header.html" %}
 {% endblock header %}
+
 {% block content %}
 
 {% endblock content %}

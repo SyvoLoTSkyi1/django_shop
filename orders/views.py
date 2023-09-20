@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
 from django.urls import reverse_lazy
@@ -33,6 +34,10 @@ class UpdateCartView(GetCurrentOrderMixin, RedirectView):
     def post(self, request, *args, **kwargs):
         form = UpdateCartOrderForm(request.POST, instance=self.get_object())
         if form.is_valid():
+            if kwargs['action'] == 'remove':
+                messages.warning(request, message='Item was deleted from your cart!')
+            else:
+                messages.success(request, message='Item was add to your cart!')
             form.save(kwargs.get('action'))
         return self.get(request, *args, **kwargs)
 
@@ -47,5 +52,6 @@ class RecalculateCartView(GetCurrentOrderMixin, RedirectView):
     def post(self, request, *args, **kwargs):
         form = RecalculateCartForm(request.POST, instance=self.get_object())
         if form.is_valid():
+            messages.success(request, message='Your cart was recalculated!')
             form.save()
         return self.get(request, *args, **kwargs)

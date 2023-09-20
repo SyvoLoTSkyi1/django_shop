@@ -9,3 +9,5 @@ django-celery-results==2.5.1
 django-celery-beat==2.5.0
 requests==2.31.0
 pymemcache==4.0.0
+phonenumbers==8.13.20
+django-phonenumber-field==7.1.0

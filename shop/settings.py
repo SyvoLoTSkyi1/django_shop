@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'main',
     'currencies',
     'wishlist',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
@@ -179,3 +180,8 @@ CACHES = {
         'LOCATION': 'django_cache',
     }
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'users.backends.PhoneModelBackend'
+]
