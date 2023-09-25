@@ -60,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
-    data_joined = models.DateTimeField(_('data joined'), default=timezone.now)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     phone = PhoneNumberField(blank=True, null=True)
     is_phone_valid = models.BooleanField(default=False)
 
