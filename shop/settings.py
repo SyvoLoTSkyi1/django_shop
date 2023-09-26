@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_celery_results',
     'django_celery_beat',
+    'silk',
     # own apps
     'config',
     'items',
@@ -72,7 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'silk.middlewares.SilkyMiddleware'
+    'silk.middleware.SilkyMiddleware'
 ]
 
 ROOT_URLCONF = 'shop.urls'
