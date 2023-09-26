@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="contact">
+        <div class="container" align="center">
+
+
+            <form method="post">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <input type="submit" value="Send" class="btn btn-primary my-3">
+            </form>
+        </div>
+    </section>
+{% endblock content %}

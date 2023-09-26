@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     # own apps
+    'config',
     'items',
     'orders',
     'feedbacks',
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middlewares.SilkyMiddleware'
 ]
 
 ROOT_URLCONF = 'shop.urls'
@@ -86,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'shop.context_processors.own_settings',
             ],
         },
     },
@@ -185,3 +188,22 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'users.backends.PhoneModelBackend'
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+'''
+host: EMAIL_HOST
+port: EMAIL_PORT
+username: EMAIL_HOST_USER
+password: EMAIL_HOST_PASSWORD
+use_tls: EMAIL_USE_TLS
+'''
+EMAIL_HOST = env('EMAIL_HOST', default='EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT', default='EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=True)
+
+ADMINS = [('Mykola', env('ADMIN_EMAIL', default='ADMIN_EMAIL')), ]
+MANAGERS = ADMINS
+EMAIL_SUBJECT_PREFIX = 'Shop - '
+SERVER_EMAIL = EMAIL_HOST_USER
