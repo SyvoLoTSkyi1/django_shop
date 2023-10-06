@@ -31,4 +31,4 @@ class UpdateWishlistView(GetWishlistMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         return reverse_lazy(
-            'wishlist' if kwargs['action'] == 'remove' else 'items')
+            'wishlist')

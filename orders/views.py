@@ -43,7 +43,7 @@ class UpdateCartView(GetCurrentOrderMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         return reverse_lazy(
-            'cart' if kwargs['action'] == 'remove' else 'items')
+            'cart')
 
 
 class RecalculateCartView(GetCurrentOrderMixin, RedirectView):
