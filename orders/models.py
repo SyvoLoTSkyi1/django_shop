@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import F, When, Case, Sum
 from django_lifecycle import LifecycleModelMixin, \
-    hook, AFTER_UPDATE
+    hook, AFTER_UPDATE, BEFORE_UPDATE
 
 from shop.constants import MAX_DIGITS, DECIMAL_PLACES
 from shop.mixins.models_mixins import PKMixin
@@ -95,6 +95,14 @@ class Order(LifecycleModelMixin, PKMixin):
         if self.items.exists():
             self.total_amount = self.get_total_amount()
             self.save(update_fields=('total_amount',), skip_hooks=True)
+
+    @hook(BEFORE_UPDATE, when='is_paid', has_changed=True, was=False)
+    def order_is_paid(self):
+        self.is_active = False
+
+    def pay(self):
+        self.is_paid = True
+        self.save()
 
 
 class OrderItemRelation(models.Model):

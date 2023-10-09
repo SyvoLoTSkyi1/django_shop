@@ -55,12 +55,28 @@
                                                value="Recalculate"
                                         >
                                     </td>
+                                    <td>
+                                        <input class="btn btn-secondary"
+                                               type="submit"
+                                               value="Clear"
+                                               formaction="{% url 'update_cart' 'clear' %}"
+                                        >
+                                    </td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
                                     <td>
                                         Total: {{ order.get_total_amount }}</td>
                                     <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">
+                                        <input class="btn btn-warning w-100"
+                                               type="submit"
+                                               value="Pay order"
+                                               formaction="{% url 'update_cart' 'pay' %}"
+                                        >
+                                    </td>
                                 </tr>
                             </form>
                             </tbody>

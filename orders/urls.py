@@ -4,7 +4,7 @@ from orders.views import CartView, UpdateCartView, RecalculateCartView
 
 urlpatterns = [
     path('cart/', CartView.as_view(), name='cart'),
-    re_path(r'cart/(?P<action>add|remove)/',
+    re_path(r'cart/(?P<action>add|remove|clear|pay)/',
             UpdateCartView.as_view(),
             name='update_cart'),
     path('recalculate/',

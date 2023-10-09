@@ -36,6 +36,10 @@ class UpdateCartView(GetCurrentOrderMixin, RedirectView):
         if form.is_valid():
             if kwargs['action'] == 'remove':
                 messages.warning(request, message='Item was deleted from your cart!')
+            elif kwargs['action'] == 'clear':
+                messages.success(request, message='Your cart was cleared!')
+            elif kwargs['action'] == 'pay':
+                messages.success(request, message='Your order was payed')
             else:
                 messages.success(request, message='Item was add to your cart!')
             form.save(kwargs.get('action'))
@@ -43,7 +47,7 @@ class UpdateCartView(GetCurrentOrderMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         return reverse_lazy(
-            'cart')
+            'cart' if kwargs['action'] == 'remove' else 'items')
 
 
 class RecalculateCartView(GetCurrentOrderMixin, RedirectView):
@@ -55,3 +59,8 @@ class RecalculateCartView(GetCurrentOrderMixin, RedirectView):
             messages.success(request, message='Your cart was recalculated!')
             form.save()
         return self.get(request, *args, **kwargs)
+
+
+
+
+

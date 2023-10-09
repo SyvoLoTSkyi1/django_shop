@@ -20,6 +20,12 @@ class UpdateCartOrderForm(forms.Form):
         return item
 
     def save(self, action):
+        if action == 'clear':
+            self.instance.items.clear()
+            return
+        elif action == 'pay':
+            self.instance.pay()
+            return
         getattr(self.instance.items, action)(self.cleaned_data['item'])
 
 
