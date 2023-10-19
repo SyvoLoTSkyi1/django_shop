@@ -36,7 +36,7 @@ class Item(PKMixin):
         max_length=32,
         blank=True,
         null=True)
-    image = models.ImageField(upload_to=upload_image)
+    image = models.ImageField(upload_to=upload_image, default='static/images/products/no_image.jpg')
     category = models.ForeignKey(
         "items.Category",
         on_delete=models.CASCADE

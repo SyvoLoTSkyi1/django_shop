@@ -162,3 +162,4 @@ cython_debug/
 /static/
 /images/
 /django_cache/
+/db.sqlite3_old

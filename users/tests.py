@@ -37,7 +37,47 @@ def test_login_user(client, faker):
     assert response.status_code == 302
 
 
-def test_sign_up_page(client):
-    response = client.get(reverse('sign_up'))
+def test_sign_up_user(client, faker):
+    url = reverse('sign_up')
+    response = client.get(url)
     assert response.status_code == 200
-    assert b'Login' in response.content
+    assert any(template.name == 'registration/sign_up.html' for template in response.templates)
+
+    email = faker.email()
+    phone = '+390735119865'
+    password = faker.password()
+    data = {
+        'email': faker.word(),
+        'phone': faker.word(),
+        'password1': faker.password(),
+        'password2': faker.password()
+    }
+
+    response = client.post(url, data=data)
+    assert response.status_code == 200
+    assert 'Enter a valid email address.' in response.content.decode()
+    assert 'Enter a valid email address.' in response.context['form'].errors['email']
+
+    data['email'] = email
+    response = client.post(url, data=data)
+    assert response.status_code == 200
+    assert 'Enter a valid phone number (e.g. +12125552368).' in response.content.decode()
+    assert 'Enter a valid phone number (e.g. +12125552368).' in response.context['form'].errors['phone']
+
+    data['phone'] = phone
+    response = client.post(url, data=data)
+
+    assert response.status_code == 200
+    assert "Passwords didn&#x27;t match" in response.content.decode()
+    assert "Passwords didn't match" in response.context['form'].errors['__all__']
+
+    data['password1'] = password
+    data['password2'] = password
+    response = client.post(url, data=data, follow=True)
+
+    assert response.status_code == 200
+    assert email == User.objects.all()[0].email
+    assert any(template.name == 'main/index.html' for template in response.templates)
+
+
+
