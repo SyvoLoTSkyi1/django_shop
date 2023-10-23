@@ -1,31 +1,7 @@
-import logging
-
-from requests import request
-
-logger = logging.getLogger(__name__)
+from shop.api_clients import BaseClient
 
 
-class GetCurrencyBaseClient:
-    base_url = None
-
-    def _request(self, method: str, params: dict = None,
-                 headers: dict = None, data: dict = None):
-
-        try:
-            response = request(
-                url=self.base_url,
-                method=method,
-                params=params or {},
-                data=data or {},
-                headers=headers or {}
-            )
-        except Exception as err:
-            logger.error(err)
-        else:
-            return response.json()
-
-
-class PrivatBankAPI(GetCurrencyBaseClient):
+class PrivatBankAPI(BaseClient):
     base_url = 'https://api.privatbank.ua/p24api/pubinfo'
 
     def get_currency(self):
@@ -40,7 +16,7 @@ class PrivatBankAPI(GetCurrencyBaseClient):
         return currency_list
 
 
-class MonoBankAPI(GetCurrencyBaseClient):
+class MonoBankAPI(BaseClient):
     base_url = 'https://api.monobank.ua/bank/currency'
 
     def reformat_currency(self, currency_list):
@@ -73,7 +49,7 @@ class MonoBankAPI(GetCurrencyBaseClient):
         return self.reformat_currency(currency_list)
 
 
-class NationalBankAPI(GetCurrencyBaseClient):
+class NationalBankAPI(BaseClient):
     base_url = 'https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange'
 
     def reformat_currency(self, currency_list):

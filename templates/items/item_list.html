@@ -27,7 +27,7 @@
                                         {% endif %}
                                     </p>
                                     <div class="h3">
-                                    ${{ item.price }}
+                                    ${{ item.actual_price }}
                                 </div>
                                 <a href="{% url 'item_detail' item.id  %}">Details...</a>
                                 <form method="post" action="{% url 'update_wishlist' 'add' %}">
