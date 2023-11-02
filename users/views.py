@@ -1,12 +1,17 @@
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, FormView
+from django.utils.http import urlsafe_base64_decode
+from django.views.generic import FormView, RedirectView
 
-from shop.settings import AUTHENTICATION_BACKENDS
 from users.forms import CustomAuthenticationForm
 from users.model_forms import SignUpModelForm
+
+
+User = get_user_model()
 
 
 class CustomLoginView(LoginView):
@@ -43,7 +48,6 @@ class SignUpView(FormView):
     def form_valid(self, form):
         user = form.save()
         messages.success(self.request, f'User {user.email} was created')
-        login(self.request, user, backend=AUTHENTICATION_BACKENDS[0])
         return super(SignUpView, self).form_valid(form)
 
     def form_invalid(self, form):
@@ -63,3 +67,32 @@ class SignUpView(FormView):
     #         new_user = form.save()
     #         login(request, new_user)
     #     return self.get(request, form=form, *args, **kwargs)
+
+
+class SignUpConfirmView(RedirectView):
+    url = reverse_lazy('login')
+
+    def get(self, request, *args, **kwargs):
+        user = self.get_user(kwargs['uidb64'])
+
+        if user is not None:
+            token = kwargs['token']
+
+            if default_token_generator.check_token(user, token):
+                user.is_active = True
+                user.save(update_fields=('is_active',))
+                messages.success(request, 'Confirmation success')
+            else:
+                messages.error(request, 'Confirmation error')
+        return super().get(request, *args, **kwargs)
+
+    def get_user(self, uidb64):
+        try:
+            # urlsafe_base64_decode() decodes to bytestring
+            uid = urlsafe_base64_decode(uidb64).decode()
+
+            user = User.objects.get(id=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist,
+                ValidationError):
+            user = None
+        return user
