@@ -9,7 +9,7 @@
                     <div class="col {% if item.items.exists %}col-lg-6{% else %}col-lg-3{% endif %}">
                         <div class="mb-3">
                             <div class="card border-primary"
-                                 style="width: 23rem; height: 45rem;">
+                                 style="width: 18rem">
                                 <img src="{{ item.image.url }}"
                                      class="product-image p-5"
                                      alt="{{ image.name }}">
@@ -17,7 +17,7 @@
                                     <h5 class="card-title">{{ item.name }}</h5>
                                     <h6 class="card-subtitle mb-2 text-muted">{{ item.category.name }}</h6>
                                     <p class="card-text">
-                                        {{ item.description|truncatechars:100 }}<br>
+                                        {{ item.description|truncatechars:16 }}<br>
                                         <br>
                                         {% if item.items.exists %}
                                             <p>Including:</p>
@@ -28,7 +28,7 @@
                                     </p>
                                     <div class="h3">
                                     ${{ item.actual_price }}
-                                </div>
+                                    </div>
                                 <a href="{% url 'item_detail' item.id  %}">Details...</a>
                                 <form method="post" action="{% url 'update_wishlist' 'add' %}">
                                     {% csrf_token %}
@@ -40,12 +40,48 @@
                                     <input type="hidden" value="{{ item.id }}" name="item">
                                     <input type="submit" class="btn btn-primary" value="Add to cart">
                                 </form>
-                            </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 {% endfor %}
+                <div class="col-12">
+                    <div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1">&laquo;
+                                            first</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                    </li>
+                                {% endif %}
+                                {% for i in "x"|rjust:page_obj.paginator.num_pages   %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ forloop.counter }}">
+                                            {{ forloop.counter }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?page={{ page_obj.next_page_number }}">next</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?page={{ page_obj.paginator.num_pages }}">last
+                                            &raquo;</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

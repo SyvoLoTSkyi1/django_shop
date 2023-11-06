@@ -13,6 +13,7 @@ from shop.mixins.views_mixins import StaffUserCheck
 
 class ItemsView(ListView):
     model = Item
+    paginate_by = 2
 
     def get_queryset(self):
         return self.model.get_items()
