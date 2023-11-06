@@ -8,8 +8,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.views.generic import FormView, RedirectView
 
 from users.forms import CustomAuthenticationForm
-from users.model_forms import SignUpModelForm
-
+from users.model_forms import SignUpModelForm, SignUpConfirmPhoneForm
 
 User = get_user_model()
 
@@ -69,7 +68,7 @@ class SignUpView(FormView):
     #     return self.get(request, form=form, *args, **kwargs)
 
 
-class SignUpConfirmView(RedirectView):
+class SignUpConfirmEmailView(RedirectView):
     url = reverse_lazy('login')
 
     def get(self, request, *args, **kwargs):
@@ -96,3 +95,27 @@ class SignUpConfirmView(RedirectView):
                 ValidationError):
             user = None
         return user
+
+
+class SignUpConfirmPhoneView(FormView):
+    form_class = SignUpConfirmPhoneForm
+    template_name = 'registration/sign_up_confirm_phone.html'
+    success_url = reverse_lazy('login')
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid(session_user_id=request.session['user_id']):
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.save(self.request.session['user_id'])
+        messages.success(self.request, message='Your account was activated,'
+                                               ' you can sign in!')
+        return super(SignUpConfirmPhoneForm, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, message='Please, write valid code!')
+        return super(SignUpConfirmPhoneForm, self).form_invalid(form)
+

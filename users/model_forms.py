@@ -1,12 +1,16 @@
+import random
+
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 from django.contrib.auth.tokens import default_token_generator
+from django.core.cache import cache
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from shop.helpers import send_html_mail
+from users.tasks import send_sms
 
 User = get_user_model()
 
@@ -68,7 +72,7 @@ User = get_user_model()
 #             'subject': 'Sign up confirm'
 #         }
 #         subject_template_name = 'registration/sign_up_confirm_subject.txt'
-#         email_template_name = 'registration/sign_up_confirm.html'
+#         email_template_name = 'registration/sign_up_confirm_email.html'
 #         send_html_mail(
 #             subject_template_name,
 #             email_template_name,
@@ -94,6 +98,14 @@ class SignUpModelForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=commit)
+
+        if self.cleaned_data.get("phone") and not self.cleaned_data.get("email"):
+            code = random.randint(10000, 99999)
+            cache.set(f'{str(user.id)}_code', code, timeout=60)
+            send_sms.delay(self.cleaned_data.get("phone"), code)
+
+            return user
+
         context = {
             'email': user.email,
             'domain': settings.DOMAIN,
@@ -104,7 +116,7 @@ class SignUpModelForm(UserCreationForm):
             'subject': 'Confirm registration'
         }
         subject_template_name = 'registration/sign_up_confirm_subject.txt'  # noqa
-        email_template_name = 'registration/sign_up_confirm.html'  # noqa
+        email_template_name = 'registration/sign_up_confirm_email.html'  # noqa
         send_html_mail(
             subject_template_name,
             email_template_name,
@@ -112,4 +124,25 @@ class SignUpModelForm(UserCreationForm):
             to_email=user.email,
             context=context
         )
+
         return user
+
+
+class SignUpConfirmPhoneForm(forms.Form):
+    code = forms.CharField(min_length=5, max_length=5)
+
+    def is_valid(self, session_user_id=None):
+        if not self.errors:
+            cache_code = cache.get(f'{str(session_user_id)}_code')
+            input_code = self.cleaned_data['code']
+            if cache_code == input_code:
+                return True
+            else:
+                self.errors.update({'code error': 'Please, write valid code'})
+                return False
+
+    def save(self, session_user_id=None):
+        user = User.objects.get(id=session_user_id)
+        user.is_active = True
+        user.is_phone_valid = True
+        return user.save()

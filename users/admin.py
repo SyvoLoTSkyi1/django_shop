@@ -24,7 +24,7 @@ class UserAdmin(AuthUserAdmin):
         (_('Personal info'),
          {'fields': ('first_name', 'last_name', 'phone', 'is_phone_valid')}),
         (_('Info'),
-         {'fields': ('last_login', 'date_joined',)}),
+         {'fields': ('last_login', 'date_joined', 'is_active')}),
     )
     list_display = (
         'id', 'email', 'phone', 'first_name', 'last_name', 'is_staff')
