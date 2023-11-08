@@ -3,13 +3,24 @@
 {% block content %}
     <section class="items">
       <div class="container">
-            <h2>Items</h2>
             <div class="row">
+                <div class="col-12">
+                    <br>
+                    <div class="card border-primary" style="width: 75rem">
+                        <div class="card-body">
+                            <form>
+                                {% include 'parts_html/forms/select_form.html' with form=filter_form %}
+                                <button class="btn btn-primary" style="margin-top: 20px" type="submit">Filter</button>
+                            </form>
+                        </div>
+                    </div>
+                    <br>
+                </div>
                 {% for item in object_list %}
                     <div class="col {% if item.items.exists %}col-lg-6{% else %}col-lg-3{% endif %}">
                         <div class="mb-3">
                             <div class="card border-primary"
-                                 style="width: 18rem">
+                                 style="width: 20rem">
                                 <img src="{{ item.image.url }}"
                                      class="product-image p-5"
                                      alt="{{ image.name }}">
@@ -29,17 +40,19 @@
                                     <div class="h3">
                                     ${{ item.actual_price }}
                                     </div>
-                                <a href="{% url 'item_detail' item.id  %}">Details...</a>
-                                <form method="post" action="{% url 'update_wishlist' 'add' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{ item.id }}" name="item">
-                                    <input type="submit" class="btn btn-primary" value="Add to wishlist">
-                                </form>
-                                <form method="post" action="{% url 'update_cart' 'add' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{ item.id }}" name="item">
-                                    <input type="submit" class="btn btn-primary" value="Add to cart">
-                                </form>
+                                    <a href="{% url 'item_detail' item.id  %}">Details...</a>
+                                    <div class="btn-group" role="group">
+                                        <form method="post" action="{% url 'update_wishlist' 'add' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{ item.id }}" name="item">
+                                            <input type="submit" class="btn btn-primary" value="Add to wishlist">
+                                        </form>
+                                        <form method="post" action="{% url 'update_cart' 'add' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{ item.id }}" name="item">
+                                            <input type="submit" class="btn btn-primary" value="Add to cart">
+                                        </form>
+                                    </div>
                                 </div>
 
                             </div>

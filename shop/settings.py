@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'silk',
+    'widget_tweaks',
     # own apps
     'config',
     'items',
