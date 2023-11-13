@@ -9,10 +9,10 @@ class BaseClient:
     base_url = None
 
     def _request(self, method: str,
-                    params: dict = None,
-                    headers: dict = None,
-                    data: dict = None,
-                    url: str = None) -> dict or bytes:
+                    params: dict = None,  # noqa
+                    headers: dict = None,  # noqa
+                    data: dict = None,  # noqa
+                    url: str = None) -> dict or bytes:  # noqa
         try:
             response = request(
                 url=url or self.base_url,

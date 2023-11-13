@@ -130,7 +130,10 @@ def login_user(db):
     user.set_password(password)
     user.save()
     client = Client()
-    response = client.post(reverse('login'), data={'username': user.email, 'password': password})
+    response = client.post(reverse('login'),
+                           data={'username': user.email,
+                                 'password': password}
+                           )
 
     assert response.status_code == 302
     yield client, user
@@ -150,7 +153,10 @@ def login_user_is_staff(db):
     user.set_password(password)
     user.save()
     client = Client()
-    response = client.post(reverse('login'), data={'username': user.email, 'password': password})
+    response = client.post(reverse('login'),
+                           data={'username': user.email,
+                                 'password': password}
+                           )
 
     assert response.status_code == 302
     yield client, user
@@ -160,11 +166,6 @@ def login_user_is_staff(db):
 def test_csv_file(db):
     category = Category.objects.create(
         name=fake.word()
-    )
-    image = SimpleUploadedFile(
-        name='test_image.jpg',
-        content=open('C:/IT/drinks.jpg', 'rb').read(),
-        content_type='image/jpeg'
     )
     with open('test.csv', 'w') as file:
         fieldnames = ['name', 'category', 'description', 'price', 'sku']

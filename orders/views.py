@@ -35,7 +35,9 @@ class UpdateCartView(GetCurrentOrderMixin, RedirectView):
         form = UpdateCartOrderForm(request.POST, instance=self.get_object())
         if form.is_valid():
             if kwargs['action'] == 'remove':
-                messages.warning(request, message='Item was deleted from your cart!')
+                messages.warning(request,
+                                 message='Item was deleted from your cart!')
+
             elif kwargs['action'] == 'clear':
                 messages.success(request, message='Your cart was cleared!')
             elif kwargs['action'] == 'pay':
@@ -59,8 +61,3 @@ class RecalculateCartView(GetCurrentOrderMixin, RedirectView):
             messages.success(request, message='Your cart was recalculated!')
             form.save()
         return self.get(request, *args, **kwargs)
-
-
-
-
-

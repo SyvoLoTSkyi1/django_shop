@@ -20,12 +20,16 @@ class WishlistView(GetWishlistMixin, TemplateView):
 class UpdateWishlistView(GetWishlistMixin, RedirectView):
 
     def post(self, request, *args, **kwargs):
-        form = UpdateWishlistForm(request.POST, instance=self.get_wishlist_object())
+        form = UpdateWishlistForm(request.POST,
+                                  instance=self.get_wishlist_object())
         if form.is_valid():
             if kwargs['action'] == 'remove':
-                messages.warning(request, message='Item was deleted from your wishlist!')
+                messages.warning(request,
+                                 message='Item was deleted from your wishlist!'
+                                 )
             else:
-                messages.success(request, message='Item was add to your wishlist!')
+                messages.success(request,
+                                 message='Item was add to your wishlist!')
             form.save(kwargs.get('action'))
         return self.get(request, *args, **kwargs)
 

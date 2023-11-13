@@ -12,5 +12,3 @@ class Wishlist(PKMixin):
     )
 
     items = models.ManyToManyField(Item)
-
-

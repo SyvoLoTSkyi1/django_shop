@@ -19,4 +19,4 @@ class SingletonModel(models.Model):
 
 
 class Config(SingletonModel):
-    contact_form_email = models.EmailField(env('ADMIN_EMAIL', default='ADMIN_EMAIL'))
+    contact_form_email = models.EmailField(env('ADMIN_EMAIL', default='ADMIN_EMAIL'))  # noqa

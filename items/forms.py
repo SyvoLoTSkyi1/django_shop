@@ -78,4 +78,3 @@ class ItemFilterForm(forms.Form):
         required=False,
         choices=[('', 'Select')] + Currency.choices,
     )
-

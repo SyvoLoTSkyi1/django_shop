@@ -99,7 +99,8 @@ class SignUpModelForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=commit)
 
-        if self.cleaned_data.get("phone") and not self.cleaned_data.get("email"):
+        if self.cleaned_data.get("phone") \
+                and not self.cleaned_data.get("email"):
             code = random.randint(10000, 99999)
             cache.set(f'{str(user.id)}_code', code, timeout=60)
             send_sms.delay(self.cleaned_data.get("phone"), code)

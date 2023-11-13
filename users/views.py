@@ -16,7 +16,7 @@ User = get_user_model()
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
     form_class = CustomAuthenticationForm
-    
+
     def form_valid(self, form):
         messages.success(self.request, f'Welcome back {form.get_user().email}')
         return super(LoginView, self).form_valid(form)
@@ -118,4 +118,3 @@ class SignUpConfirmPhoneView(FormView):
     def form_invalid(self, form):
         messages.error(self.request, message='Please, write valid code!')
         return super(SignUpConfirmPhoneForm, self).form_invalid(form)
-
