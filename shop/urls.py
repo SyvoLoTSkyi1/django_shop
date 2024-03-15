@@ -23,6 +23,7 @@ from users.urls import urlpatterns as users_urlpatterns
 from main.urls import urlpatterns as main_urlpatterns
 from orders.urls import urlpatterns as orders_urlpatterns
 from wishlist.urls import urlpatterns as wishlist_urlpatterns
+from api.urls import urlpatterns as api_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +33,7 @@ urlpatterns = [
     path('', include(main_urlpatterns)),
     path('', include(orders_urlpatterns)),
     path('', include(wishlist_urlpatterns)),
+    path('api/v1/', include(api_urlpatterns)),
 ]
 
 if settings.DEBUG:

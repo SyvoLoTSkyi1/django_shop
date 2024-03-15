@@ -1,0 +1,15 @@
+from rest_framework import serializers
+
+from items.models import Item
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ('id', 'name')
+
+
+class ItemRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ('id', 'name', 'description', 'sku', 'price', 'currency', 'image')

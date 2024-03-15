@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'silk',
     'widget_tweaks',
+    'rest_framework',
     # own apps
     'config',
     'items',
