@@ -12,4 +12,4 @@ class ItemSerializer(serializers.ModelSerializer):
 class ItemRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ('id', 'name', 'description', 'sku', 'price', 'currency', 'image')
+        fields = '__all__'
