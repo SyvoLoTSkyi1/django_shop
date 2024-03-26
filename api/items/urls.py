@@ -1,8 +1,8 @@
-from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from api.items.views import ItemsViewList, ItemsViewRetrieve
+from api.items.views import ItemsViewSet, CategoriesViewSet
 
-urlpatterns = [
-    path('items/', ItemsViewList.as_view()),
-    path('items/<uuid:pk>/', ItemsViewRetrieve.as_view())
-]
+router = DefaultRouter()
+router.register(r'items', ItemsViewSet, basename='items')
+router.register(r'categories', CategoriesViewSet, basename='categories')
+urlpatterns = router.urls
