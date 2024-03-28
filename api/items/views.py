@@ -9,8 +9,8 @@ from items.models import Item, Category
 
 
 class ItemsViewSet(mixins.RetrieveModelMixin,
-                    mixins.ListModelMixin,
-                    GenericViewSet):
+                   mixins.ListModelMixin,
+                   GenericViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticated]
@@ -23,7 +23,8 @@ class CategoriesViewSet(mixins.RetrieveModelMixin,
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
 
-    @action(detail=True, methods=['get'], url_path='items', serializer_class=ItemSerializer)
+    @action(detail=True, methods=['get'], url_path='items',
+            serializer_class=ItemSerializer)
     def get_items(self, request, *args, **kwargs):
         """
         /api/v1/categories/:id/items/

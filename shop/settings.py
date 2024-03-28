@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'silk',
     'widget_tweaks',
     'rest_framework',
+    'rest_framework.authtoken',
     # own apps
     'config',
     'items',
@@ -210,3 +211,9 @@ ADMINS = [('Mykola', env('ADMIN_EMAIL', default='ADMIN_EMAIL')), ]
 MANAGERS = ADMINS
 EMAIL_SUBJECT_PREFIX = 'Shop - '
 SERVER_EMAIL = EMAIL_HOST_USER
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api.authentication.TokenAuthentication',
+    ]
+}
