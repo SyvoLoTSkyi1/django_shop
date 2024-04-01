@@ -4,37 +4,24 @@ from django.http import HttpResponse
 import csv
 
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import DetailView, FormView
+from django_filters.views import FilterView
 
-from items.forms import ImportForm, ItemFilterForm
+from items.filters import ItemFilter
+from items.forms import ImportForm
 from items.models import Item
 from shop.mixins.views_mixins import StaffUserCheck
 
 
-class ItemsView(ListView):
+class ItemsView(FilterView):
     model = Item
     paginate_by = 2
-    filter_form = ItemFilterForm
-
-    def filtered_queryset(self, queryset):
-        category_id = self.request.GET.get('category')
-        currency = self.request.GET.get('currency')
-        if category_id:
-            queryset = queryset.filter(category_id=category_id)
-        if currency:
-            queryset = queryset.filter(currency=currency)
-        return queryset
+    filterset_class = ItemFilter
+    template_name_suffix = '_list'
 
     def get_queryset(self):
         qs = self.model.get_items()
-        return self.filtered_queryset(qs)
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=None, **kwargs)
-        context.update(
-            {'filter_form': self.filter_form}
-        )
-        return context
+        return qs
 
 
 class ItemDetail(DetailView):
