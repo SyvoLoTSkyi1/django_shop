@@ -3,7 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from django_filters import rest_framework as filters
 
+from api.items.filters import ItemFilter
 from api.items.serializers import ItemSerializer, CategorySerializer
 from items.models import Item, Category
 
@@ -14,6 +16,8 @@ class ItemsViewSet(mixins.RetrieveModelMixin,
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ItemFilter
 
 
 class CategoriesViewSet(mixins.RetrieveModelMixin,
