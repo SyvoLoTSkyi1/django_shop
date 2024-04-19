@@ -4,81 +4,66 @@
     Wishlist
 {% endblock %}
 {% block content %}
-    <section class="h-100" style="background-color: #eee;">
-        <div class="container h-100 py-5">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                {% if wishlist.items.exists %}
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-normal mb-0 text-black">
-                            Wishlist</h3>
-                    </div>
-                    {% for item in wishlist.items.iterator %}
-                        <div class="card rounded-3 mb-4">
-                            <div class="card-body p-4">
-                                <div class="row d-flex justify-content-between align-items-center">
-                                    <div class="col-md-2 col-lg-2 col-xl-2">
-                                        <img
-                                                src="{{ item.image.url }}"
-                                                class="img-fluid rounded-3"
-                                                alt="{{ item.name }}">
+   <section>
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-normal mb-0 text-black">Wishlist</h3>
+            </div>
+            <div class="row">
+                {% for wishlist in object_list %}
+                    <div class="col {% if wishlist.item.items.exists %}col-lg-6{% else %}col-lg-3{% endif %}">
+                        <div class="card mb-3">
+                            {% if wishlist.item.image %}
+                                <figure class="text-center">
+                                    <img style="width: 20rem" src="{{ wishlist.item.image.url }}"
+                                         class="product-image p-3"
+                                         alt="{{ wishlist.item.name }}">
+                                </figure>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ wishlist.item.name }}</h5>
+                                <p class="small">{{ wishlist.item.category.name }}</p>
+                                <p class="card-text">
+                                    {{ wishlist.item.description|truncatewords:16 }}
+                                </p>
+                                {% if wishlist.item.items.exists %}
+                                    <p>Including:</p>
+                                    {% for sub in wishlist.item.items.iterator %}
+                                        <div class="d-inline-flex flex-column rounded border p-2">
+                                            <p>{{ sub.name }}</p>
+                                            <figure class="text-center d-inline">
+                                                <img src="{{ sub.image.url }}"
+                                                     class="product-image p-3"
+                                                     alt="{{ wishlist.item.name }}">
+                                            </figure>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="text-center">
+                                    <div class="h3">
+                                        {{ wishlist.item.actual_price }} UAH
                                     </div>
-                                    <div class="col-md-3 col-lg-3 col-xl-3">
-                                        <p class="lead fw-normal mb-2">{{ item.name }}</p>
-                                        <p><span
-                                                class="text-muted">Category: </span>{{ item.category.name }}
-                                            <br><span
-                                                    class="text-muted">Sku: </span>{{ item.sku }}
-                                        </p>
-                                    </div>
-
-                                    <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                        <h5 class="mb-0">
-                                            $ {{ item.price }}</h5>
-                                    </div>
-                                    <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                        <form method="post"
-                                              action="{% url 'update_cart' 'add' %}">
+                                    <form method="post" action="{% url 'update_cart' 'add' %}">
                                             {% csrf_token %}
-                                            <input type="hidden"
-                                                   value="{{ item.id }}"
-                                                   name="item">
-                                            <input type="submit"
-                                                   class="btn btn-outline-success"
-                                                   value="Add to cart">
+                                            <input type="hidden" value="{{ wishlist.item.id }}" name="item">
+                                            <input type="submit" class="btn btn-primary" value="Add to cart">
                                         </form>
-                                    </div>
-                                    <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                        <a href="" class="text-danger"><i
-                                                class="fas fa-trash fa-lg"></i></a>
-                                        <form method="post"
-                                              action="{% url 'update_wishlist' 'remove' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden"
-                                                   value="{{ item.id }}"
-                                                   name="item">
-                                            <input type="submit"
-                                                   class="btn btn-outline-danger"
-                                                   value="Delete">
-                                        </form>
-                                    </div>
+                                    <a class="nav-link active" aria-current="page"
+                                       href="{% url 'update_wishlist' wishlist.item.id %}">
+                                        <input type="submit"
+                                               class="btn btn-outline-danger"
+                                               value="Delete">
+                                    </a>
                                 </div>
+
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-normal mb-0 text-black">Wishlist</h3>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <h4>Your wishlist is empty</h4>
-                            <a href="{% url 'items' %}"
-                               class="btn btn-primary">
-                                Our items
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
+                {% empty %}
+                    <h3>Your wishlist is empty.</h3>
+                        <p>Go to <a href="{% url 'items' %}">items</a>
+                            page and add something good to wishlist.</p>
+                {% endfor %}
             </div>
         </div>
     </section>

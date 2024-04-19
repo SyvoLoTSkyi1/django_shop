@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from wishlist.models import Wishlist
+from wishlist.models import WishlistItem
 
 
-@admin.register(Wishlist)
-class WishlistAdmin(admin.ModelAdmin):
+@admin.register(WishlistItem)
+class WishlistItemAdmin(admin.ModelAdmin):
     ...
