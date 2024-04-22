@@ -11,19 +11,19 @@
             </div>
             <div class="row">
                 {% for wishlist in object_list %}
-                    <div class="col {% if wishlist.item.items.exists %}col-lg-6{% else %}col-lg-3{% endif %}">
-                        <div class="card mb-3">
+                    <div class="col {% if wishlist.item.items.exists %}col-lg-7{% else %}col-lg-4{% endif %}">
+                        <div class="card mb-3" >
                             {% if wishlist.item.image %}
                                 <figure class="text-center">
-                                    <img style="width: 20rem" src="{{ wishlist.item.image.url }}"
-                                         class="product-image p-3"
+                                    <img style="max-height: 250px;" src="{{ wishlist.item.image.url }}"
+                                         class="item-image p-3"
                                          alt="{{ wishlist.item.name }}">
                                 </figure>
                             {% endif %}
                             <div class="card-body">
-                                <h5 class="card-title">{{ wishlist.item.name }}</h5>
+                                <h6 class="card-title">{{ wishlist.item.name }}</h6>
                                 <p class="small">{{ wishlist.item.category.name }}</p>
-                                <p class="card-text">
+                                <p class="small">
                                     {{ wishlist.item.description|truncatewords:16 }}
                                 </p>
                                 {% if wishlist.item.items.exists %}
@@ -39,21 +39,19 @@
                                         </div>
                                     {% endfor %}
                                 {% endif %}
-                                <div class="text-center">
-                                    <div class="h3">
-                                        {{ wishlist.item.actual_price }} UAH
+                                <div class="text-left">
+                                    <div class="h5">
+                                        ${{ wishlist.item.actual_price }}
                                     </div>
-                                    <form method="post" action="{% url 'update_cart' 'add' %}">
+                                    <div class="d-flex justify-content-between"><form method="post" action="{% url 'update_cart' 'add' %}">
                                             {% csrf_token %}
                                             <input type="hidden" value="{{ wishlist.item.id }}" name="item">
                                             <input type="submit" class="btn btn-primary" value="Add to cart">
                                         </form>
                                     <a class="nav-link active" aria-current="page"
                                        href="{% url 'update_wishlist' wishlist.item.id %}">
-                                        <input type="submit"
-                                               class="btn btn-outline-danger"
-                                               value="Delete">
-                                    </a>
+                                        <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                    </a></div>
                                 </div>
 
                             </div>
