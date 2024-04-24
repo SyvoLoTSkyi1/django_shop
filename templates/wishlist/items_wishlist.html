@@ -12,7 +12,7 @@
             <div class="row">
                 {% for wishlist in object_list %}
                     <div class="col {% if wishlist.item.items.exists %}col-lg-7{% else %}col-lg-4{% endif %}">
-                        <div class="card mb-3" >
+                        <div class="card mb-3">
                             {% if wishlist.item.image %}
                                 <figure class="text-center">
                                     <img style="max-height: 250px;" src="{{ wishlist.item.image.url }}"
@@ -48,10 +48,13 @@
                                             <input type="hidden" value="{{ wishlist.item.id }}" name="item">
                                             <input type="submit" class="btn btn-primary" value="Add to cart">
                                         </form>
-                                    <a class="nav-link active" aria-current="page"
-                                       href="{% url 'update_wishlist' wishlist.item.id %}">
+                                    <a href="javascript:void(0);"
+                                       class="updateWishlist"
+                                       aria-current="page"
+                                       data-item="{{ wishlist.item.id }}">
                                         <button type="submit" class="btn btn-outline-danger">Delete</button>
-                                    </a></div>
+                                    </a>
+                                    </div>
                                 </div>
 
                             </div>
@@ -66,3 +69,12 @@
         </div>
     </section>
 {% endblock content %}
+{% block scripts %}
+    <script>
+        $(document).ready(function() {
+            $('.updateWishlist').click(function () {
+                updateWishlist($(this), 'remove')
+            })
+        });
+    </script>
+{% endblock scripts %}
