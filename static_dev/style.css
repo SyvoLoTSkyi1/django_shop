@@ -1,6 +1,9 @@
 .logo{
     width: 48px;
 }
+.item-image{
+    max-height: 150px;
+}
 ul.messages{
     display: inline-block;
     position: absolute;
