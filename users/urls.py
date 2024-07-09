@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from users.views import SignUpView, LoginView, \
-    SignUpConfirmEmailView, SignUpConfirmPhoneView
+    SignUpConfirmEmailView, SignUpConfirmPhoneView, UserProfileView
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
@@ -10,5 +10,7 @@ urlpatterns = [
     path('sign_up/<uidb64>/<token>/confirm/',
          SignUpConfirmEmailView.as_view(), name='sign_up_confirm_email'),
     path('sign_up/confirmphone/',
-         SignUpConfirmPhoneView.as_view(), name='sign_up_confirm_phone')
+         SignUpConfirmPhoneView.as_view(), name='sign_up_confirm_phone'),
+    path('profile/',
+         UserProfileView.as_view(), name='user_profile')
 ]

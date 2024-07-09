@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import FormView, RedirectView
+from django.views.generic import FormView, RedirectView, TemplateView
 
 from users.forms import CustomAuthenticationForm
 from users.model_forms import SignUpModelForm, SignUpConfirmPhoneForm
@@ -118,3 +118,7 @@ class SignUpConfirmPhoneView(FormView):
     def form_invalid(self, form):
         messages.error(self.request, message='Please, write valid code!')
         return super(SignUpConfirmPhoneForm, self).form_invalid(form)
+
+
+class UserProfileView(TemplateView):
+    template_name = 'users/user_profile.html'
