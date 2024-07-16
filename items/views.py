@@ -23,6 +23,17 @@ class ItemsView(FilterView):
         qs = self.model.get_items()
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query_params'] = self.get_query_params()
+        return context
+
+    def get_query_params(self):
+        query_params = self.request.GET.copy()
+        if 'page' in query_params:
+            del query_params['page']
+        return query_params.urlencode()
+
 
 class ItemDetail(DetailView):
     model = Item
@@ -30,7 +41,6 @@ class ItemDetail(DetailView):
 
 @login_required
 def export_csv(request, *args, **kwargs):
-
     response = HttpResponse(
         content_type="text/csv",
         headers={"Content-Disposition": 'attachment; filename="items.csv"'},
@@ -61,3 +71,28 @@ class ImportCSVIntoItems(StaffUserCheck, FormView):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+
+
+class ItemSearchView(FilterView):
+    model = Item
+    template_name = 'items/item_list.html'
+    filterset_class = ItemFilter
+    paginate_by = 2
+
+    def get_queryset(self):
+        query = self.request.GET.get('query')
+        if query:
+            return Item.objects.filter(name__icontains=query)
+        return Item.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('query', '')
+        context['query_params'] = self.get_query_params()
+        return context
+
+    def get_query_params(self):
+        query_params = self.request.GET.copy()
+        if 'page' in query_params:
+            del query_params['page']
+        return query_params.urlencode()
