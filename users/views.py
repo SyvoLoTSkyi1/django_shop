@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import FormView, RedirectView, TemplateView
+from django.views.generic import FormView, RedirectView, DetailView
 
 from users.forms import CustomAuthenticationForm
 from users.model_forms import SignUpModelForm, SignUpConfirmPhoneForm
@@ -120,5 +121,10 @@ class SignUpConfirmPhoneView(FormView):
         return super(SignUpConfirmPhoneForm, self).form_invalid(form)
 
 
-class UserProfileView(TemplateView):
+class UserProfileView(LoginRequiredMixin, DetailView):
+    model = User
     template_name = 'users/user_profile.html'
+    context_object_name = 'user_profile'
+
+    def get_object(self, queryset=None):
+        return self.request.user

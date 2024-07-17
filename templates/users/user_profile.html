@@ -9,12 +9,12 @@
         <h3>My Profile</h3>
     </div>
     <div class="user-info p-3">
-        <h6 class="user-email">First name: {{ user.first_name }}</h6>
-        <h6 class="user-phone">Last name: {{ user.last_name }}</h6>
-        <h6 class="user-email">Email: {{ user.email }}</h6>
-        <h6 class="user-phone">Phone: {{ user.phone }}</h6>
-        <h6 class="user-date-joined">Date joined: {{ user.date_joined }}</h6>
-        <h6 class="user-order-is-active">Active order: {{ user.order_set.get.is_active }}</h6>
+        <h6 class="user-email">First name: {{ user_profile.first_name }}</h6>
+        <h6 class="user-phone">Last name: {{ user_profile.last_name }}</h6>
+        <h6 class="user-email">Email: {{ user_profile.email }}</h6>
+        <h6 class="user-phone">Phone: {{ user_profile.phone }}</h6>
+        <h6 class="user-date-joined">Date joined: {{ user_profile.date_joined }}</h6>
+        <h6 class="user-order-is-active">Active order: {{ user_profile.order_set.get.is_active }}</h6>
     </div>
 
 {% endblock content %}
