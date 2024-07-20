@@ -15,6 +15,9 @@
           <li class="nav-item">
             <a class="nav-link active" href="{% url 'items' %}">Items</a>
           </li>
+        <li class="nav-item">
+           <a class="nav-link active" href="{% url 'popular_items' %}">Popular</a>
+         </li>
         {% if not request.user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Login</a>

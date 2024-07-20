@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from items.models import Item, Category
+from items.models import Item, Category, PopularItem
 
 
 @admin.register(Item)
@@ -27,3 +27,13 @@ class CategoryAdmin(admin.ModelAdmin):
                 '<img src="{}" width="64" height="64" />'.format(
                     obj.image.url)))
         return ''
+
+
+@admin.register(PopularItem)
+class PopularItemAdmin(admin.ModelAdmin):
+    list_display = ('item_details',)
+
+    def item_details(self, obj):
+        return obj.item
+
+    item_details.short_description = 'Item Details'

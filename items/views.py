@@ -4,12 +4,12 @@ from django.http import HttpResponse
 import csv
 
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView
+from django.views.generic import DetailView, FormView, ListView
 from django_filters.views import FilterView
 
-from items.filters import ItemFilter
+from items.filters import ItemFilter, PopularItemFilter
 from items.forms import ImportForm
-from items.models import Item
+from items.models import Item, PopularItem
 from shop.mixins.views_mixins import StaffUserCheck
 
 
@@ -96,3 +96,10 @@ class ItemSearchView(FilterView):
         if 'page' in query_params:
             del query_params['page']
         return query_params.urlencode()
+
+
+class PopularItemsView(FilterView):
+    model = PopularItem
+    template_name = 'items/popular_items.html'
+    filterset_class = PopularItemFilter
+    paginate_by = 2
