@@ -66,9 +66,32 @@
                                     <td></td>
                                     <td></td>
                                     <td>
-                                        Total: {{ order.get_total_amount }}</td>
+                                        <span class="d-inline-block">Total: {{ order.get_total_amount }}</span>
+                                    {% if order.discount %}
+                                            <span class="d-inline-block small">(included discount {{ order.discount.code }})</span>
+                                        {% endif %}
+                                    </td>
                                     <td></td>
                                 </tr>
+                                {% if not order.discount %}
+                                    <tr>
+                                        <td colspan="2">Have discount?</td>
+                                        <td colspan="2">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   name="code"
+                                                   placeholder="Enter discount code here">
+                                        </td>
+                                        <td>
+                                            <input class="btn btn-secondary"
+                                                   type="submit"
+                                                   value="Apply discount"
+                                                   formaction="{% url 'apply_discount' %}"
+                                            >
+                                        </td>
+                                    </tr>
+                                {% endif %}
+
                                 <tr>
                                     <td colspan="6">
                                         <input class="btn btn-warning w-100"

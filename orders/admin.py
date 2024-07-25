@@ -17,4 +17,4 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(Discount)
 class DiscountAdmin(admin.ModelAdmin):
-    ...
+    list_filter = ('discount_type', 'is_active')
