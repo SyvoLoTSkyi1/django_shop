@@ -77,7 +77,7 @@ class Order(LifecycleModelMixin, PKMixin):
         return self.items.through.objects \
             .filter(order=self) \
             .select_related('item') \
-            .annotate(full_price=F('item__price') * F('quantity'))
+            .annotate(full_price=F('item__actual_price') * F('quantity'))
 
     def get_total_amount(self):
         total_amount = 0

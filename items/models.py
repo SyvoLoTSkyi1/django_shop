@@ -2,6 +2,7 @@ from os import path
 
 from django.core.cache import cache
 from django.db import models
+from django_lifecycle import hook, AFTER_CREATE, AFTER_UPDATE
 
 from shop.constants import MAX_DIGITS, DECIMAL_PLACES
 from shop.mixins.models_mixins import PKMixin
@@ -47,22 +48,32 @@ class Item(PKMixin):
     )
     items = models.ManyToManyField('items.Item', blank=True)
 
-    def __str__(self):
-        return f"{self.name} | {self.category}"
+    _items_cache_key = 'items'
 
-    @classmethod
-    def _cache_key(cls):
-        return 'items'
+    def __str__(self):
+        return f"{self.name} | {self.category}| {self.sku}"
+
+    @property
+    def _item_cache_key(self):
+        return f'item_{self.id}'
 
     @classmethod
     def get_items(cls):
-        items = cache.get(cls._cache_key())
+        items = cache.get(cls._items_cache_key)
         print('BEFORE ', items)
         if not items:
             items = Item.objects.all()
-            cache.set(cls._cache_key(), items)
+            cache.set(cls._items_cache_key, items)
             print('AFTER ', items)
         return items
+
+    @hook(AFTER_CREATE)
+    def order_after_create(self):
+        cache.delete(self._items_cache_key)
+
+    @hook(AFTER_UPDATE)
+    def order_after_update(self):
+        cache.delete(self._item_cache_key)
 
 
 class Category(PKMixin):
