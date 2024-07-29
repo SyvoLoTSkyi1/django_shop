@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-6 offset-lg-3">
+                    {% if order.items.exists %}
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <form method="post"
+                                  action="{% url 'recalculate_cart' %}"
+                                  id="recalculateCart">
+                                {% csrf_token %}
+                                {% for item_relation in items_relation.iterator %}
+                                     <tr>
+                                        <th scope="row">{{ forloop.counter }}</th>
+                                        <td>{{ item_relation.item.name }}</td>
+                                        <td>{{ item_relation.quantity }}</td>
+                                        <td>{{ item_relation.item.actual_price }}</td>
+                                        <td>{{ item_relation.full_price }}</td>
+                                     </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td colspan="5">
+                                        <span class="d-inline-block">Total: {{ order.get_total_amount }}</span>
+                                    {% if order.discount %}
+                                            <span class="d-inline-block small">(included discount {{ order.discount.code }})</span>
+                                    {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Want to update order?</td>
+                                    <td colspan="2">
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'cart' %}">Click here</a>
+                                    </td>
+                                </tr>
+                                {% if not order.discount %}
+                                    <tr>
+                                        <td colspan="2">Have discount?</td>
+                                        <td colspan="2">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   name="code"
+                                                   placeholder="Enter discount code here">
+                                        </td>
+                                        <td>
+                                            <input class="btn btn-secondary"
+                                                   type="submit"
+                                                   value="Apply discount"
+                                                   formaction="{% url 'apply_discount' %}">
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </form>
+                            </tbody>
+                        </table>
+                        <div class="user-info mt-4">
+                            <h3>User Information</h3>
+                            <p><strong>First name:</strong> {{ order.user.first_name }}</p>
+                            <p><strong>Last name:</strong> {{ order.user.last_name }}</p>
+                            <p><strong>Email:</strong> {{ order.user.email }}</p>
+                            <p><strong>Phone:</strong> {{ order.user.phone }}</p>
+                        </div>
+
+                        <div class="mt-4">
+                            <form method="post" action="{% url 'update_cart' 'pay' %}">
+                                {% csrf_token %}
+                                <input class="btn btn-warning w-100" type="submit" value="Pay Order">
+                            </form>
+                        </div>
+                    {% else %}
+                        <h3>Your cart is empty.</h3>
+                        <p>Goto <a href="{% url 'items' %}">items</a> page and add something good to cart.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

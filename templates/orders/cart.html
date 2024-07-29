@@ -73,32 +73,9 @@
                                     </td>
                                     <td></td>
                                 </tr>
-                                {% if not order.discount %}
-                                    <tr>
-                                        <td colspan="2">Have discount?</td>
-                                        <td colspan="2">
-                                            <input type="text"
-                                                   class="form-control"
-                                                   name="code"
-                                                   placeholder="Enter discount code here">
-                                        </td>
-                                        <td>
-                                            <input class="btn btn-secondary"
-                                                   type="submit"
-                                                   value="Apply discount"
-                                                   formaction="{% url 'apply_discount' %}"
-                                            >
-                                        </td>
-                                    </tr>
-                                {% endif %}
-
                                 <tr>
                                     <td colspan="6">
-                                        <input class="btn btn-warning w-100"
-                                               type="submit"
-                                               value="Pay order"
-                                               formaction="{% url 'update_cart' 'pay' %}"
-                                        >
+                                          <a href="{% url 'cart_confirmation' %}" class="btn btn-warning w-100">Confirm Order</a>
                                     </td>
                                 </tr>
                             </form>

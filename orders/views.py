@@ -65,10 +65,28 @@ class RecalculateCartView(GetCurrentOrderMixin, RedirectView):
 
 
 class ApplyDiscountView(GetCurrentOrderMixin, RedirectView):
-    url = reverse_lazy('cart')
+    url = reverse_lazy('cart_confirmation')
 
     def post(self, request, *args, **kwargs):
         form = ApplyDiscountForm(request.POST, order=self.get_object())
         if form.is_valid():
             form.apply()
         return self.get(request, *args, **kwargs)
+
+
+class OrderConfirmView(GetCurrentOrderMixin, TemplateView):
+    template_name = 'orders/order_confirm.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'order': self.get_object(),
+                        'items_relation': self.get_queryset()})
+
+        return context
+
+    def get_queryset(self):
+        return self.get_object().get_items_through()
