@@ -85,14 +85,12 @@ class Order(LifecycleModelMixin, PKMixin):
             total_amount += item_relation.full_price
 
         if self.discount:
-            total_amount = (
-                total_amount - self.discount.amount
-                if self.discount.discount_type == DiscountTypes.VALUE else
-                total_amount - (
-                        self.total_amount / 100 * self.discount.amount
-                )
-            ).quantize(decimal.Decimal('.01'))
-        return total_amount
+            if self.discount.discount_type == DiscountTypes.VALUE:
+                total_amount -= self.discount.amount
+            elif self.discount.discount_type == DiscountTypes.PERCENT:
+                total_amount -= (total_amount * self.discount.amount / 100)
+
+        return total_amount.quantize(decimal.Decimal('.01'))
 
     # def get_total_amount(self):
     #     return self.items.through.objects.annotate(
@@ -128,6 +126,10 @@ class Order(LifecycleModelMixin, PKMixin):
     def pay(self):
         self.is_paid = True
         self.save()
+
+    def reset_discount(self):
+        self.discount = None
+        self.save(update_fields=['discount'])
 
 
 class OrderItemRelation(models.Model):

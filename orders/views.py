@@ -42,15 +42,21 @@ class UpdateCartView(GetCurrentOrderMixin, RedirectView):
             elif kwargs['action'] == 'clear':
                 messages.success(request, message='Your cart was cleared!')
             elif kwargs['action'] == 'pay':
-                messages.success(request, message='Your order was payed')
+                messages.success(request, message='Success')
             else:
                 messages.success(request, message='Item was add to your cart!')
             form.save(kwargs.get('action'))
+        else:
+            messages.error(request, 'Invalid form data.')
         return self.get(request, *args, **kwargs)
 
     def get_redirect_url(self, *args, **kwargs):
-        return reverse_lazy(
-            'cart' if kwargs['action'] == 'remove' else 'items')
+        if kwargs['action'] == 'remove':
+            return reverse_lazy('cart')
+        elif kwargs['action'] in ('add', 'clear',):
+            return reverse_lazy('items')
+        elif kwargs['action'] == 'pay':
+            return reverse_lazy('success_confirm_cart')
 
 
 class RecalculateCartView(GetCurrentOrderMixin, RedirectView):
@@ -65,7 +71,7 @@ class RecalculateCartView(GetCurrentOrderMixin, RedirectView):
 
 
 class ApplyDiscountView(GetCurrentOrderMixin, RedirectView):
-    url = reverse_lazy('cart_confirmation')
+    url = reverse_lazy('confirm_cart')
 
     def post(self, request, *args, **kwargs):
         form = ApplyDiscountForm(request.POST, order=self.get_object())
@@ -74,8 +80,8 @@ class ApplyDiscountView(GetCurrentOrderMixin, RedirectView):
         return self.get(request, *args, **kwargs)
 
 
-class OrderConfirmView(GetCurrentOrderMixin, TemplateView):
-    template_name = 'orders/order_confirm.html'
+class ConfirmCartView(GetCurrentOrderMixin, TemplateView):
+    template_name = 'orders/cart_confirm.html'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -90,3 +96,7 @@ class OrderConfirmView(GetCurrentOrderMixin, TemplateView):
 
     def get_queryset(self):
         return self.get_object().get_items_through()
+
+
+class SuccessConfirmCartView(TemplateView):
+    template_name = 'orders/cart_confirm_success.html'

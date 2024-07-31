@@ -6,21 +6,25 @@ from orders.models import Discount
 
 
 class UpdateCartOrderForm(forms.Form):
-    item = forms.UUIDField(required=True)
+    item = forms.UUIDField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
         self.instance = kwargs['instance']
 
-    def clean_item_id(self):
-        try:
-            item = Item.objects.get(id=self.cleaned_data['item'])
-        except Item.DoesNotExist:
-            raise ValidationError('Wrong item id.')
-
-        return item
+    def clean(self):
+        item_id = self.cleaned_data.get('item')
+        if item_id:
+            try:
+                Item.objects.get(id=item_id)
+            except Item.DoesNotExist:
+                raise ValidationError('Wrong item id.')
+        return self.cleaned_data
 
     def save(self, action):
+        if self.instance.discount and action in ('clear', 'remove', 'add',):
+            self.instance.reset_discount()
+
         if action == 'clear':
             self.instance.items.clear()
             return
@@ -40,6 +44,9 @@ class RecalculateCartForm(forms.Form):
                        k.startswith(('quantity', 'item'))}
 
     def save(self):
+        if self.instance.discount:
+            self.instance.reset_discount()
+
         for k in self.cleaned_data.keys():
             if k.startswith('item_'):
                 index = k.split('_')[-1]
