@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import FormView, RedirectView, DetailView
 
+from orders.models import Order
 from users.forms import CustomAuthenticationForm
 from users.model_forms import SignUpModelForm, SignUpConfirmPhoneForm
 
@@ -128,3 +129,12 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        orders = Order.objects.filter(user=user)
+        context['order_count'] = orders.count()
+        context['has_active_order'] = orders.filter(is_active=True).exists()
+
+        return context
