@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path, re_path
 
-from orders.views import CartView, UpdateCartView, RecalculateCartView, ApplyDiscountView, \
+from orders.views import CartView, UpdateCartView, \
+    RecalculateCartView, ApplyDiscountView, \
     SuccessConfirmCartView, ConfirmCartView
 
 urlpatterns = [

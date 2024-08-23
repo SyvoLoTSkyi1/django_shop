@@ -12,6 +12,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Item</th>
                                 <th scope="col">Quantity</th>
+                                <th scope="col">Size</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">Amount</th>
                             </tr>
@@ -26,6 +27,7 @@
                                         <th scope="row">{{ forloop.counter }}</th>
                                         <td>{{ item_relation.item.name }}</td>
                                         <td>{{ item_relation.quantity }}</td>
+                                        <td>{{ item_relation.size.name }}</td>
                                         <td>{{ item_relation.item.actual_price }}</td>
                                         <td>{{ item_relation.full_price }}</td>
                                      </tr>

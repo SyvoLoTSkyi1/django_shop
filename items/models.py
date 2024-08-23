@@ -42,6 +42,12 @@ class Item(PKMixin):
         upload_to=upload_image,
         default='static/images/products/no_image.jpg'
     )
+    size = models.ManyToManyField(
+        'items.Size',
+        related_name='items',
+        blank=True,
+        null=True
+    )
     category = models.ForeignKey(
         "items.Category",
         on_delete=models.CASCADE
@@ -91,3 +97,10 @@ class PopularItem(PKMixin):
         on_delete=models.CASCADE,
         related_name='in_popular'
     )
+
+
+class Size(PKMixin):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name

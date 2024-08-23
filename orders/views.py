@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.db.models import F
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, RedirectView
 
-from orders.forms import RecalculateCartForm, UpdateCartOrderForm, ApplyDiscountForm
+from orders.forms import RecalculateCartForm, \
+    UpdateCartOrderForm, ApplyDiscountForm
 from orders.mixins import GetCurrentOrderMixin
 
 
@@ -33,21 +35,30 @@ class CartView(GetCurrentOrderMixin, TemplateView):
 class UpdateCartView(GetCurrentOrderMixin, RedirectView):
 
     def post(self, request, *args, **kwargs):
-        form = UpdateCartOrderForm(request.POST, instance=self.get_object())
-        if form.is_valid():
-            if kwargs['action'] == 'remove':
-                messages.warning(request,
-                                 message='Item was deleted from your cart!')
+        action = kwargs.get('action')
+        form = UpdateCartOrderForm(request.POST,
+                                   instance=self.get_object(),
+                                   action=action)
 
-            elif kwargs['action'] == 'clear':
-                messages.success(request, message='Your cart was cleared!')
-            elif kwargs['action'] == 'pay':
-                messages.success(request, message='Success')
-            else:
-                messages.success(request, message='Item was add to your cart!')
-            form.save(kwargs.get('action'))
+        if form.is_valid():
+            try:
+                form.save(kwargs.get('action'))
+                if kwargs['action'] == 'remove':
+                    messages.warning(request,
+                                    message='Item was deleted from your cart!')
+
+                elif kwargs['action'] == 'clear':
+                    messages.success(request, message='Your cart was cleared!')
+                elif kwargs['action'] == 'pay':
+                    messages.success(request, message='Success')
+                else:
+                    messages.success(request, message='Item was add to your cart!')
+            except ValidationError as e:
+                messages.error(request, e.message)
+
         else:
-            messages.error(request, 'Invalid form data.')
+            error_message = ' '.join([str(error) for error in form.non_field_errors()])
+            messages.error(request, error_message)
         return self.get(request, *args, **kwargs)
 
     def get_redirect_url(self, *args, **kwargs):
@@ -80,22 +91,26 @@ class ApplyDiscountView(GetCurrentOrderMixin, RedirectView):
         return self.get(request, *args, **kwargs)
 
 
-class ConfirmCartView(GetCurrentOrderMixin, TemplateView):
+# class ConfirmCartView(GetCurrentOrderMixin, TemplateView):
+#     template_name = 'orders/cart_confirm.html'
+#
+#     @method_decorator(login_required)
+#     def dispatch(self, request, *args, **kwargs):
+#         return super().dispatch(request, *args, **kwargs)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context.update({'order': self.get_object(),
+#                         'items_relation': self.get_queryset()})
+#
+#         return context
+#
+#     def get_queryset(self):
+#         return self.get_object().get_items_through()
+
+
+class ConfirmCartView(CartView):
     template_name = 'orders/cart_confirm.html'
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({'order': self.get_object(),
-                        'items_relation': self.get_queryset()})
-
-        return context
-
-    def get_queryset(self):
-        return self.get_object().get_items_through()
 
 
 class SuccessConfirmCartView(TemplateView):

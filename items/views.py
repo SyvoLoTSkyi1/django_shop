@@ -4,7 +4,7 @@ from django.http import HttpResponse
 import csv
 
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import DetailView, FormView
 from django_filters.views import FilterView
 
 from items.filters import ItemFilter, PopularItemFilter

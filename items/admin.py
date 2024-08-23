@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from items.models import Item, Category, PopularItem
+from items.models import Item, Category, PopularItem, Size
 
 
 @admin.register(Item)
@@ -37,3 +37,9 @@ class PopularItemAdmin(admin.ModelAdmin):
         return obj.item
 
     item_details.short_description = 'Item Details'
+
+
+@admin.register(Size)
+class SizeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'created_at',)
+    list_filter = ('created_at',)

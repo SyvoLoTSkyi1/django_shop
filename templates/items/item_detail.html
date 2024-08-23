@@ -36,8 +36,20 @@
                             <div class="h3">
                                 ${{ item.price }}
                             </div>
-                            <a href="#" class="btn btn-primary">Add to
-                                cart</a>
+                            <form method="post" action="{% url 'update_cart' 'add' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="item" value="{{ item.id }}">
+
+                                <label for="size">Choose a size:</label>
+                                <select name="size" id="size" required>
+                                    <option value="" selected disabled>Select a size</option>
+                                    {% for size in item.size.all|dictsort:"created_at" %}
+                                        <option value="{{ size.id }}">{{ size.name }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <button type="submit" class="btn btn-primary mt-2">Add to Cart</button>
+                            </form>
                         </div>
                     </div>
                 </div>

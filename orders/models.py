@@ -142,7 +142,12 @@ class OrderItemRelation(models.Model):
         on_delete=models.CASCADE,
         related_name='orders'
     )
+    size = models.ForeignKey(
+        'items.Size',
+        on_delete=models.CASCADE,
+        null=True
+    )
     quantity = models.PositiveSmallIntegerField(default=1)
 
     class Meta:
-        unique_together = ('order', 'item')
+        unique_together = ('order', 'item', 'size')

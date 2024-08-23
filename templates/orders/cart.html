@@ -12,6 +12,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Item</th>
                                 <th scope="col">Quantity</th>
+                                <th scope="col">Size</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">Amount</th>
                                 <th scope="col"></th>
@@ -34,13 +35,20 @@
                                             <input type="hidden"
                                                    name="item_{{ forloop.counter0 }}"
                                                    value="{{ item_relation.item.id }}">
+                                            <input type="hidden"
+                                                   name="size_{{ forloop.counter0 }}"
+                                                   value="{{ item_relation.size.id }}">
                                         </td>
+                                        <td>{{ item_relation.size.name }}</td>
                                         <td>{{ item_relation.item.actual_price }}</td>
                                         <td>{{ item_relation.full_price }}</td>
                                         <td>
                                             <input type="hidden"
                                                    value="{{ item_relation.item.id  }}"
                                                    name="item">
+                                            <input type="hidden"
+                                                   value="{{ item_relation.size.id }}"
+                                                   name="size">
                                             <input type="submit"
                                                    class="btn btn-danger"
                                                    value="X"
