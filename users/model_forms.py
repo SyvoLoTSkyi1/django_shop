@@ -87,6 +87,8 @@ User = get_user_model()
 
 
 class SignUpModelForm(UserCreationForm):
+    email = forms.EmailField(required=False)
+
     class Meta:
         model = User
         fields = ("email", "phone",)
@@ -103,7 +105,8 @@ class SignUpModelForm(UserCreationForm):
                 and not self.cleaned_data.get("email"):
             code = random.randint(10000, 99999)
             cache.set(f'{str(user.id)}_code', code, timeout=60)
-            send_sms.delay(self.cleaned_data.get("phone"), code)
+            phone = self.cleaned_data.get("phone")
+            send_sms(phone, code)
 
             return user
 
@@ -130,10 +133,13 @@ class SignUpModelForm(UserCreationForm):
 
 
 class SignUpConfirmPhoneForm(forms.Form):
-    code = forms.CharField(min_length=5, max_length=5)
+    code = forms.IntegerField(min_value=10000, max_value=99999)
 
     def is_valid(self, session_user_id=None):
-        if not self.errors:
+
+        valid = super(SignUpConfirmPhoneForm, self).is_valid()
+
+        if valid:
             cache_code = cache.get(f'{str(session_user_id)}_code')
             input_code = self.cleaned_data['code']
             if cache_code == input_code:

@@ -1,12 +1,12 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import FormView, RedirectView, DetailView
+from django.views.generic import FormView, RedirectView, DetailView, UpdateView
 
 from orders.models import Order
 from users.forms import CustomAuthenticationForm
@@ -18,14 +18,15 @@ User = get_user_model()
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
     form_class = CustomAuthenticationForm
+    success_url = reverse_lazy('main')
 
     def form_valid(self, form):
         messages.success(self.request, f'Welcome back {form.get_user().email}')
-        return super(LoginView, self).form_valid(form)
+        return super().form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, 'Error login')
-        return super(LoginView, self).form_invalid(form)
+        return super().form_invalid(form)
 
     # def get_context_data(self, request, *args, **kwargs):
     #     context = super().get_context_data(**kwargs)
@@ -44,10 +45,11 @@ class CustomLoginView(LoginView):
 class SignUpView(FormView):
     template_name = 'registration/sign_up.html'
     form_class = SignUpModelForm
-    success_url = reverse_lazy('main')
+    success_url = reverse_lazy('sign_up_confirm_phone')
 
     def form_valid(self, form):
         user = form.save()
+        self.request.session['user_id'] = user.id
         messages.success(self.request, f'User {user.email} was created')
         return super(SignUpView, self).form_valid(form)
 
@@ -105,8 +107,9 @@ class SignUpConfirmPhoneView(FormView):
     success_url = reverse_lazy('login')
 
     def post(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id')
         form = self.get_form()
-        if form.is_valid(session_user_id=request.session['user_id']):
+        if form.is_valid(session_user_id=user_id):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -115,11 +118,11 @@ class SignUpConfirmPhoneView(FormView):
         form.save(self.request.session['user_id'])
         messages.success(self.request, message='Your account was activated,'
                                                ' you can sign in!')
-        return super(SignUpConfirmPhoneForm, self).form_valid(form)
+        return super(SignUpConfirmPhoneView, self).form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, message='Please, write valid code!')
-        return super(SignUpConfirmPhoneForm, self).form_invalid(form)
+        return super(SignUpConfirmPhoneView, self).form_invalid(form)
 
 
 class UserProfileView(LoginRequiredMixin, DetailView):
@@ -138,3 +141,14 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         context['has_active_order'] = orders.filter(is_active=True).exists()
 
         return context
+
+
+# class UserUpdateView(LoginRequiredMixin, UpdateView):
+#     model = User
+#     form_class = UserUpdateForm
+#     template_name = 'profile/user_update.html'
+#     success_url = reverse_lazy('user_profile')  # URL на який користувач перенаправляється після успішного редагування
+#
+#     def get_object(self):
+#         # Повертаємо поточного користувача
+#         return self.request.user

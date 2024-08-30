@@ -16,5 +16,5 @@ def send_mail_checker(subject_template_name, email_template_name, from_email,
 
 
 @app.task
-def send_sms(phone: str, code: str):
-    print('Code ' + code + ' has sent to number ' + phone)
+def send_sms(phone: str, code: int):
+    print(f'Code {code} has sent to number {phone}')

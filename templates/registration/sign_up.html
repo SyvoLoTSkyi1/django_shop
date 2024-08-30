@@ -1,21 +1,14 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
     <section class="sign up">
         <div class="container" align="center">
             <h1>Sign Up</h1>
                 <form method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                    <label>{{ field.label }}</label>
-                    {{ field }}
-
-                    {% endfor %}
+                     {% include 'parts_html/forms/simple_form.html' with form=form %}
                     <input type="submit" value="Sign Up">
                 </form>
-                <p>
-                    {{ form.errors }}
-                </p>
         </div>
     </section>
 {% endblock content %}

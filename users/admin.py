@@ -27,5 +27,5 @@ class UserAdmin(AuthUserAdmin):
          {'fields': ('last_login', 'date_joined', 'is_active')}),
     )
     list_display = (
-        'id', 'email', 'phone', 'first_name', 'last_name', 'is_staff')
+        'id', 'email', 'phone', 'is_active', 'is_phone_valid', 'is_staff')
     ordering = ('email',)
