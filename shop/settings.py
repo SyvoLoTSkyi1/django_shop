@@ -194,7 +194,7 @@ AUTHENTICATION_BACKENDS = [
     'users.backends.PhoneModelBackend'
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 '''
 host: EMAIL_HOST
 port: EMAIL_PORT

@@ -21,7 +21,7 @@ class CustomLoginView(LoginView):
     success_url = reverse_lazy('main')
 
     def form_valid(self, form):
-        messages.success(self.request, f'Welcome back {form.get_user().email}')
+        messages.success(self.request, f'Welcome back {form.get_user().email or form.get_user().phone}')
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -45,12 +45,16 @@ class CustomLoginView(LoginView):
 class SignUpView(FormView):
     template_name = 'registration/sign_up.html'
     form_class = SignUpModelForm
-    success_url = reverse_lazy('sign_up_confirm_phone')
 
     def form_valid(self, form):
         user = form.save()
         self.request.session['user_id'] = user.id
-        messages.success(self.request, f'User {user.email} was created')
+        messages.success(self.request, f'User {user.email or user.phone} was created')
+        if user.email:
+            self.success_url = reverse_lazy('sign_up_activation_email')
+        elif user.phone:
+            self.success_url = reverse_lazy('sign_up_confirm_phone')
+
         return super(SignUpView, self).form_valid(form)
 
     def form_invalid(self, form):

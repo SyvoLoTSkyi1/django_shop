@@ -3,7 +3,7 @@
 
 {% translate "Please go to the following page" %}
 {% block reset_link %}
-{{ domain }}{% url 'sign_up_confirm_email' uidb64=uid token=token %}
+http://{{ domain }}{% url 'sign_up_confirm_email' uidb64=uid token=token %}
 {% endblock %}
 
 {% translate "Thanks for using our site!" %}

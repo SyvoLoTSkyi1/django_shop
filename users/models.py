@@ -12,22 +12,22 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class UserManager(DjangoUserManager):
 
-    def _create_user(self, email, password, **extra_fields):
+    def _create_user(self, email=None, phone=None, password=None, **extra_fields):
         """
         Create and save a user with the given username, email, and password.
         """
-        if not email:
-            raise ValueError('The given email must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        if not email and not phone:
+            raise ValueError('The given email or phone must be set')
+        email = self.normalize_email(email) if email else None
+        user = self.model(email=email, phone=phone, **extra_fields)
         user.password = make_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email=None, phone=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(email=email, phone=phone, password=password, **extra_fields)
 
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -38,14 +38,14 @@ class UserManager(DjangoUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('SuperUser must have is_superuser=True.')
 
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(email=email, password=password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=158, blank=True)
     last_name = models.CharField(_('last name'), max_length=158, blank=True)
     email = models.EmailField(_('email address'), unique=True,
-                              validators=[EmailValidator])
+                              null=True, blank=True, validators=[EmailValidator])
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-    phone = PhoneNumberField(blank=True, null=True)
+    phone = PhoneNumberField(unique=True, blank=True, null=True)
     is_phone_valid = models.BooleanField(default=False)
 
     objects = UserManager()
@@ -76,7 +76,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def clean(self):
         super().clean()
-        self.email = self.__class__.objects.normalize_email(self.email)
+        if self.email:
+            self.email = self.__class__.objects.normalize_email(self.email)
+        else:
+            self.email = None
 
     def get_full_name(self):
         """
