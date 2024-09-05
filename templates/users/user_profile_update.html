@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <div class="row my-3 p-3">
+        <h3>Edit Profile</h3>
+    </div>
+    <div class="user-info p-3">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_first_name">First name:</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_last_name">Last name:</label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">Email (not editable):</label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_phone">Phone (not editable):</label>
+                {{ form.phone }}
+            </div>
+
+            <h6 class="user-order-is-active">Active order: {{ has_active_order }}</h6>
+            <h6 class="user-order-count">Total orders: {{ order_count }}</h6>
+            <h6 class="user-date-joined">Date joined: {{ user_profile.date_joined }}</h6>
+
+            <button type="submit" class="btn btn-primary">Save changes</button>
+        </form>
+    </div>
+
+{% endblock content %}

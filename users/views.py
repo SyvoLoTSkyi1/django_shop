@@ -10,7 +10,7 @@ from django.views.generic import FormView, RedirectView, DetailView, UpdateView
 
 from orders.models import Order
 from users.forms import CustomAuthenticationForm
-from users.model_forms import SignUpModelForm, SignUpConfirmPhoneForm
+from users.model_forms import SignUpModelForm, SignUpConfirmPhoneForm, UserProfileForm
 
 User = get_user_model()
 
@@ -147,12 +147,19 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         return context
 
 
-# class UserUpdateView(LoginRequiredMixin, UpdateView):
-#     model = User
-#     form_class = UserUpdateForm
-#     template_name = 'profile/user_update.html'
-#     success_url = reverse_lazy('user_profile')  # URL на який користувач перенаправляється після успішного редагування
-#
-#     def get_object(self):
-#         # Повертаємо поточного користувача
-#         return self.request.user
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = 'users/user_profile_update.html'
+    success_url = reverse_lazy('user_profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Your profile was successfully updated!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please correct the error below.')
+        return super().form_invalid(form)

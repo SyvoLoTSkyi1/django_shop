@@ -153,3 +153,14 @@ class SignUpConfirmPhoneForm(forms.Form):
         user.is_active = True
         user.is_phone_valid = True
         return user.save()
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'phone', )
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        self.fields['email'].disabled = True  # Зробити поле "email" нередагованим
+        self.fields['phone'].disabled = True  # Зробити поле "phone" нередагованим

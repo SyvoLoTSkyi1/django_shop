@@ -16,6 +16,8 @@
         <h6 class="user-order-is-active">Active order: {{ has_active_order }}</h6>
         <h6 class="user-order-count">Total orders: {{ order_count }}</h6>
         <h6 class="user-date-joined">Date joined: {{ user_profile.date_joined }}</h6>
+
+        <a href="{% url 'user_profile_update' %}" class="btn btn-primary mt-3">Update Profile</a>
     </div>
 
 {% endblock content %}
