@@ -20,9 +20,9 @@ class UserAdmin(AuthUserAdmin):
         }),
     )
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'phone', 'is_phone_valid', 'is_email_valid', 'password')}),
         (_('Personal info'),
-         {'fields': ('first_name', 'last_name', 'phone', 'is_phone_valid')}),
+         {'fields': ('first_name', 'last_name', 'country', 'city', 'address')}),
         (_('Info'),
          {'fields': ('last_login', 'date_joined', 'is_active')}),
     )

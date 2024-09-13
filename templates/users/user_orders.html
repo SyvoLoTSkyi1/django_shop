@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    My Orders
+{% endblock %}
+{% block content %}
+
+    <div class="row my-3 p-3">
+        <h3>My Orders (Total: {{ order_count }})</h3>
+    </div>
+    <div class="user-orders p-3">
+        <ul>
+        {% for order in orders %}
+            <li>
+                Order ID: {{ order.id }} - Status: {% if order.is_active %} Active {% else %} Paid {% endif %} - Date: {{ order.created_at }}
+            </li>
+        {% empty %}
+            <p>You have no orders.</p>
+        {% endfor %}
+        </ul>
+    </div>
+
+{% endblock content %}

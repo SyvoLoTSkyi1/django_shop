@@ -4,7 +4,7 @@
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-12 col-lg-6 offset-lg-3">
+                <div class="col-12 col-lg-8 offset-lg-2">
                     {% if order.items.exists %}
                         <table class="table">
                             <thead>
@@ -68,19 +68,13 @@
                             </form>
                             </tbody>
                         </table>
-                        <div class="user-info mt-4">
+                        <div class="user-info mt-5">
                             <h3>User Information</h3>
-                            <p><strong>First name:</strong> {{ order.user.first_name }}</p>
-                            <p><strong>Last name:</strong> {{ order.user.last_name }}</p>
-                            <p><strong>Email:</strong> {{ order.user.email }}</p>
-                            <p><strong>Phone:</strong> {{ order.user.phone }}</p>
-                        </div>
-
-                        <div class="mt-4">
-                            <form method="post" action="{% url 'update_cart' 'pay' %}">
-                                {% csrf_token %}
-                                <input class="btn btn-warning w-100" type="submit" value="Pay Order">
-                            </form>
+                            <form method="post">
+                                {% include 'parts_html/forms/simple_form.html' with form=form %}
+                                <input class="btn btn-warning mt-4" type="submit" value="Update User">
+                                <input class="btn btn-warning w-100 mt-4" type="submit"
+                                       value="Pay Order"  formaction="{% url 'update_cart' 'pay' %}">
                         </div>
                     {% else %}
                         <h3>Your cart is empty.</h3>

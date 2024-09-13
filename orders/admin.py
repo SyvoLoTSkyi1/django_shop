@@ -11,7 +11,8 @@ class OrderItemRelationInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'total_amount', 'discount')
+    list_display = ('id', 'user', 'total_amount',
+                    'discount', 'is_active', 'is_paid')
     inlines = (OrderItemRelationInline,)
 
 

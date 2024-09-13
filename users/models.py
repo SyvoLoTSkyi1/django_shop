@@ -63,6 +63,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     phone = PhoneNumberField(unique=True, blank=True, null=True)
     is_phone_valid = models.BooleanField(default=False)
+    is_email_valid = models.BooleanField(default=False)
+    country = models.CharField(max_length=158, blank=True)
+    city = models.CharField(max_length=158, blank=True)
+    address = models.CharField(max_length=158, blank=True)
 
     objects = UserManager()
 

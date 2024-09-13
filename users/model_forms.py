@@ -158,9 +158,18 @@ class SignUpConfirmPhoneForm(forms.Form):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'phone', )
+        fields = ('first_name', 'last_name', 'email',
+                  'phone', 'country', 'city', 'address', )
 
     def __init__(self, *args, **kwargs):
+        require_fields = kwargs.pop('require_fields', False)
         super(UserProfileForm, self).__init__(*args, **kwargs)
-        self.fields['email'].disabled = True  # Зробити поле "email" нередагованим
-        self.fields['phone'].disabled = True  # Зробити поле "phone" нередагованим
+
+        for field in ['email', 'phone']:
+            if getattr(self.instance, f'is_{field}_valid', False):
+                self.fields[field].disabled = True
+
+        if require_fields:
+            required_fields = ['first_name', 'last_name', 'country', 'city', 'address']
+            for field in required_fields:
+                self.fields[field].required = True

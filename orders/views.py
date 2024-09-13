@@ -1,14 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.db.models import F
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, UpdateView
 
 from orders.forms import RecalculateCartForm, \
     UpdateCartOrderForm, ApplyDiscountForm
 from orders.mixins import GetCurrentOrderMixin
+from orders.models import Order
+from users.model_forms import UserProfileForm
 
 
 class CartView(GetCurrentOrderMixin, TemplateView):
@@ -20,8 +21,9 @@ class CartView(GetCurrentOrderMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'order': self.get_object(),
-                        'items_relation': self.get_queryset()})
+        context.update({
+            'order': self.get_object(),
+            'items_relation': self.get_queryset()})
 
         return context
 
@@ -109,8 +111,57 @@ class ApplyDiscountView(GetCurrentOrderMixin, RedirectView):
 #         return self.get_object().get_items_through()
 
 
-class ConfirmCartView(CartView):
+class ConfirmCartView(UpdateView):
     template_name = 'orders/cart_confirm.html'
+    form_class = UserProfileForm
+    success_url = reverse_lazy('confirm_cart')
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        """
+        Return current user for form.
+        """
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        """
+        Add Order to form.
+        """
+        context = super().get_context_data(**kwargs)
+        order = Order.objects.filter(user=self.get_object(), is_active=True)[0]
+        context.update({
+            'order': order,
+            'items_relation': order.get_items_through()})
+        return context
+
+    def get_form_kwargs(self):
+        """
+        Send User to form.
+        """
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            'instance': self.get_object(),
+            'require_fields': True
+        })
+        return kwargs
+
+    def form_valid(self, form):
+        """
+        Check the form and save it.
+        """
+        form.save()
+        messages.success(self.request, 'Your details have been updated successfully.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """
+        If form is invalid, show message with errors
+        """
+        messages.error(self.request, 'Error updating your details. Please check the form.')
+        return super().form_invalid(form)
 
 
 class SuccessConfirmCartView(TemplateView):

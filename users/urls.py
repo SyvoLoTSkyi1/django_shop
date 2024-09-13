@@ -2,8 +2,10 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 
-from users.views import SignUpView, LoginView, \
-    SignUpConfirmEmailView, SignUpConfirmPhoneView, UserProfileView, CustomLoginView, UserProfileUpdateView
+from users.views import SignUpView, \
+    SignUpConfirmEmailView, SignUpConfirmPhoneView, \
+    UserProfileView, CustomLoginView, UserProfileUpdateView, \
+    UserOrdersView
 
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
@@ -21,4 +23,6 @@ urlpatterns = [
          UserProfileView.as_view(), name='user_profile'),
     path('profile/update/',
          UserProfileUpdateView.as_view(), name='user_profile_update'),
+    path('profile/orders/',
+         UserOrdersView.as_view(), name='user_orders'),
 ]

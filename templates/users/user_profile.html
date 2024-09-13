@@ -7,14 +7,18 @@
 
     <div class="row my-3 p-3">
         <h3>My Profile</h3>
+        <a href="{% url 'user_orders' %}">View My Orders</a>
+        <a href="{% url 'contacts' %}">Contact Us</a>
+        <a href="{% url 'logout' %}">Logout</a>
     </div>
     <div class="user-info p-3">
         <h6 class="user-email">First name: {{ user_profile.first_name }}</h6>
         <h6 class="user-phone">Last name: {{ user_profile.last_name }}</h6>
-        <h6 class="user-email">Email: {{ user_profile.email }}</h6>
-        <h6 class="user-phone">Phone: {{ user_profile.phone }}</h6>
-        <h6 class="user-order-is-active">Active order: {{ has_active_order }}</h6>
-        <h6 class="user-order-count">Total orders: {{ order_count }}</h6>
+        <h6 class="user-email">Email: {{ user_profile.email }} - {% if user_profile.is_email_valid %} Valid {% else %} Invalid {% endif %}</h6>
+        <h6 class="user-phone">Phone: {{ user_profile.phone }} - {% if user_profile.is_phone_valid %} Valid {% else %} Invalid {% endif %}</h6>
+        <h6 class="user-country">Country: {{ user_profile.country }}</h6>
+        <h6 class="user-city">City: {{ user_profile.city }}</h6>
+        <h6 class="user-address">Address: {{ user_profile.address }}</h6>
         <h6 class="user-date-joined">Date joined: {{ user_profile.date_joined }}</h6>
 
         <a href="{% url 'user_profile_update' %}" class="btn btn-primary mt-3">Update Profile</a>

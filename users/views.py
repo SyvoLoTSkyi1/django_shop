@@ -6,7 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import FormView, RedirectView, DetailView, UpdateView
+from django.views.generic import FormView, RedirectView, DetailView, UpdateView, ListView
 
 from orders.models import Order
 from users.forms import CustomAuthenticationForm
@@ -87,7 +87,8 @@ class SignUpConfirmEmailView(RedirectView):
 
             if default_token_generator.check_token(user, token):
                 user.is_active = True
-                user.save(update_fields=('is_active',))
+                user.is_email_valid = True
+                user.save(update_fields=('is_active', 'is_email_valid', ))
                 messages.success(request, 'Confirmation success')
             else:
                 messages.error(request, 'Confirmation error')
@@ -163,3 +164,18 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, 'Please correct the error below.')
         return super().form_invalid(form)
+
+
+class UserOrdersView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'users/user_orders.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        user = self.request.user
+        return Order.objects.filter(user=user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order_count'] = self.get_queryset().count()
+        return context
