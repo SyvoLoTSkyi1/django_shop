@@ -14,6 +14,11 @@ class WishlistView(LoginRequiredMixin, ListView):
     model = WishlistItem
     template_name = 'wishlist/items_wishlist.html'
 
+    def get_queryset(self):
+        return WishlistItem.objects.filter(user=self.request.user)
+
+
+
 
 # class UpdateWishlistView(LoginRequiredMixin, DetailView):
 #     model = Item

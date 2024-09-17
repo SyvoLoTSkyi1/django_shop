@@ -11,6 +11,7 @@ from items.filters import ItemFilter, PopularItemFilter
 from items.forms import ImportForm
 from items.models import Item, PopularItem
 from shop.mixins.views_mixins import StaffUserCheck
+from wishlist.models import WishlistItem
 
 
 class ItemsView(FilterView):
@@ -25,7 +26,15 @@ class ItemsView(FilterView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['query_params'] = self.get_query_params()
+        context.update({'items': self.get_queryset()})
+        if self.request.user.is_authenticated:
+            wishlist_items = WishlistItem.objects.filter(user=self.request.user).\
+                values_list('item_id', flat=True)
+        else:
+            wishlist_items = []
+        context.update({
+            'wishlist_items': wishlist_items,
+            'query_params': self.get_query_params()})
         return context
 
     def get_query_params(self):
@@ -98,8 +107,12 @@ class ItemSearchView(FilterView):
         return query_params.urlencode()
 
 
-class PopularItemsView(FilterView):
+class PopularItemsView(ItemsView):
     model = PopularItem
     template_name = 'items/popular_items.html'
     filterset_class = PopularItemFilter
     paginate_by = 2
+    
+    def get_queryset(self):
+        
+        return super().get_queryset()

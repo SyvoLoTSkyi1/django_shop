@@ -10,48 +10,48 @@
                 <h3 class="fw-normal mb-0 text-black">Wishlist</h3>
             </div>
             <div class="row">
-                {% for wishlist in object_list %}
-                    <div class="col {% if wishlist.item.items.exists %}col-lg-7{% else %}col-lg-4{% endif %}">
+                {% for wishlist_item in object_list %}
+                    <div class="col {% if wishlist_item.item.items.exists %}col-lg-7{% else %}col-lg-4{% endif %}">
                         <div class="card mb-3">
-                            {% if wishlist.item.image %}
+                            {% if wishlist_item.item.image %}
                                 <figure class="text-center">
-                                    <img style="max-height: 250px;" src="{{ wishlist.item.image.url }}"
+                                    <img style="max-height: 250px;" src="{{ wishlist_item.item.image.url }}"
                                          class="item-image p-3"
-                                         alt="{{ wishlist.item.name }}">
+                                         alt="{{ wishlist_item.item.name }}">
                                 </figure>
                             {% endif %}
                             <div class="card-body">
-                                <h6 class="card-title">{{ wishlist.item.name }}</h6>
-                                <p class="small">{{ wishlist.item.category.name }}</p>
+                                <h6 class="card-title">{{ wishlist_item.item.name }}</h6>
+                                <p class="small">{{ wishlist_item.item.category.name }}</p>
                                 <p class="small">
-                                    {{ wishlist.item.description|truncatewords:16 }}
+                                    {{ wishlist_item.item.description|truncatewords:16 }}
                                 </p>
-                                {% if wishlist.item.items.exists %}
+                                {% if wishlist_item.item.items.exists %}
                                     <p>Including:</p>
-                                    {% for sub in wishlist.item.items.iterator %}
+                                    {% for sub in wishlist_item.item.items.iterator %}
                                         <div class="d-inline-flex flex-column rounded border p-2">
                                             <p>{{ sub.name }}</p>
                                             <figure class="text-center d-inline">
                                                 <img src="{{ sub.image.url }}"
                                                      class="product-image p-3"
-                                                     alt="{{ wishlist.item.name }}">
+                                                     alt="{{ wishlist_item.item.name }}">
                                             </figure>
                                         </div>
                                     {% endfor %}
                                 {% endif %}
                                 <div class="text-left">
                                     <div class="h5">
-                                        ${{ wishlist.item.actual_price }}
+                                        ${{ wishlist_item.item.actual_price }}
                                     </div>
                                     <div class="d-flex justify-content-between"><form method="post" action="{% url 'update_cart' 'add' %}">
                                             {% csrf_token %}
-                                            <input type="hidden" value="{{ wishlist.item.id }}" name="item">
+                                            <input type="hidden" value="{{ wishlist_item.item.id }}" name="item">
                                             <input type="submit" class="btn btn-primary" value="Add to cart">
                                         </form>
                                     <a href="javascript:void(0);"
                                        class="updateWishlist"
                                        aria-current="page"
-                                       data-item="{{ wishlist.item.id }}">
+                                       data-item="{{ wishlist_item.item.id }}">
                                         <button type="submit" class="btn btn-outline-danger">Delete</button>
                                     </a>
                                     </div>
