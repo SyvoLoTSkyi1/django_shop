@@ -6,11 +6,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 from django.contrib.auth.tokens import default_token_generator
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from shop.helpers import send_html_mail
-from users.tasks import send_sms
+from users.tasks import send_sms, send_verification_sms, send_confirmation_email
 
 User = get_user_model()
 
@@ -71,8 +72,8 @@ User = get_user_model()
 #             'token': default_token_generator.make_token(user),
 #             'subject': 'Sign up confirm'
 #         }
-#         subject_template_name = 'registration/sign_up_confirm_subject.txt'
-#         email_template_name = 'registration/sign_up_confirm_email.html'
+#         subject_template_name = 'registration/confirm_subject.txt'
+#         email_template_name = 'registration/confirm_email.html'
 #         send_html_mail(
 #             subject_template_name,
 #             email_template_name,
@@ -103,56 +104,40 @@ class SignUpModelForm(UserCreationForm):
 
         if self.cleaned_data.get("phone") \
                 and not self.cleaned_data.get("email"):
-            code = random.randint(10000, 99999)
-            cache.set(f'{str(user.id)}_code', code, timeout=60)
             phone = self.cleaned_data.get("phone")
-            send_sms(phone, code)
-
-            return user
-
-        context = {
-            'email': user.email,
-            'domain': settings.DOMAIN,
-            'site_name': 'SHOP',
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'user': user,
-            'token': default_token_generator.make_token(user),
-            'subject': 'Confirm registration'
-        }
-        subject_template_name = 'registration/sign_up_confirm_subject.txt'  # noqa
-        email_template_name = 'registration/sign_up_confirm_email.html'  # noqa
-        send_html_mail(
-            subject_template_name,
-            email_template_name,
-            from_email=settings.SERVER_EMAIL,
-            to_email=user.email,
-            context=context
-        )
+            send_verification_sms(user, phone)
+        else:
+            send_confirmation_email(user)
 
         return user
 
 
-class SignUpConfirmPhoneForm(forms.Form):
+class ConfirmPhoneForm(forms.Form):  # SignUpConfirmPhoneForm
     code = forms.IntegerField(min_value=10000, max_value=99999)
 
-    def is_valid(self, session_user_id=None):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
 
-        valid = super(SignUpConfirmPhoneForm, self).is_valid()
+    def is_valid(self, user_id=None):
+        valid = super().is_valid()
 
         if valid:
-            cache_code = cache.get(f'{str(session_user_id)}_code')
+            cache_code = cache.get(f'{str(user_id)}_code')
             input_code = self.cleaned_data['code']
             if cache_code == input_code:
                 return True
             else:
-                self.errors.update({'code error': 'Please, write valid code'})
+                self.add_error('code', 'Invalid code. Please try again.')
                 return False
 
-    def save(self, session_user_id=None):
-        user = User.objects.get(id=session_user_id)
-        user.is_active = True
+    def save(self, user_id=None):
+        user = User.objects.get(id=user_id)
+        if not user.is_active:
+            user.is_active = True
         user.is_phone_valid = True
-        return user.save()
+        user.save()
+        return user
 
 
 class UserProfileForm(forms.ModelForm):

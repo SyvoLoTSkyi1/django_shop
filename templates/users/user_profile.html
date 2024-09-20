@@ -14,8 +14,8 @@
     <div class="user-info p-3">
         <h6 class="user-email">First name: {{ user_profile.first_name }}</h6>
         <h6 class="user-phone">Last name: {{ user_profile.last_name }}</h6>
-        <h6 class="user-email">Email: {{ user_profile.email }} - {% if user_profile.is_email_valid %} Valid {% else %} Invalid {% endif %}</h6>
-        <h6 class="user-phone">Phone: {{ user_profile.phone }} - {% if user_profile.is_phone_valid %} Valid {% else %} Invalid {% endif %}</h6>
+        <h6 class="user-email">Email: {% if user_profile.email %} {{ user_profile.email }} - {% if user_profile.is_email_valid %} Valid {% else %} <a href="{% url 'confirm_phone_email_profile' 'email' %}">Invalid</a> {% endif %} {% endif %}</h6>
+        <h6 class="user-phone">Phone: {% if user_profile.phone %} {{ user_profile.phone }} - {% if user_profile.is_phone_valid %} Valid {% else %} <a href="{% url 'confirm_phone_email_profile' 'phone' %}">Invalid</a> {% endif %} {% endif %}</h6>
         <h6 class="user-country">Country: {{ user_profile.country }}</h6>
         <h6 class="user-city">City: {{ user_profile.city }}</h6>
         <h6 class="user-address">Address: {{ user_profile.address }}</h6>

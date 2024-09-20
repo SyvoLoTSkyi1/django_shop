@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Confirm Your Phone
+{% endblock title %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Please,write sms code in order to confirm your phone</h1>
+        <div class="col col-lg-4 offset-lg-4">
+            <form method="post">
+                {% include 'parts_html/forms/simple_form.html' with form=form %}
+                <input class="btn btn-warning" type="submit" value="Confirm">
+            </form>
+        </div>
+    </div>
+{% endblock content %}

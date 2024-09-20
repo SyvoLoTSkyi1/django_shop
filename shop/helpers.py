@@ -20,3 +20,7 @@ def send_html_mail(subject_template_name, email_template_name, from_email,
         email_message.attach_alternative(html_email, 'text/html')
 
     email_message.send()
+
+
+def send_sms(phone: str, code: int):
+    print(f'Code {code} has sent to number {phone}')

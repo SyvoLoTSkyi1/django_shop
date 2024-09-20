@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView
@@ -10,13 +10,14 @@ from django.views.generic import FormView, RedirectView, DetailView, UpdateView,
 
 from orders.models import Order
 from users.forms import CustomAuthenticationForm
-from users.model_forms import SignUpModelForm, SignUpConfirmPhoneForm, UserProfileForm
+from users.model_forms import SignUpModelForm, ConfirmPhoneForm, UserProfileForm
+from users.tasks import send_confirmation_email, send_verification_sms
 
 User = get_user_model()
 
 
 class CustomLoginView(LoginView):
-    template_name = 'registration/login.html'
+    template_name = 'users/registration/login.html'
     form_class = CustomAuthenticationForm
     success_url = reverse_lazy('main')
 
@@ -28,32 +29,20 @@ class CustomLoginView(LoginView):
         messages.error(self.request, 'Error login')
         return super().form_invalid(form)
 
-    # def get_context_data(self, request, *args, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context.update({'form': kwargs.get('form') or LoginForm}) # noqa
-    #     return context
-    #
-    # def post(self, request, *args, **kwargs):
-    #     context = self.get_context_data(**kwargs)
-    #     form = context['form']
-    #     form = form(request.POST)
-    #     if form.is_valid():
-    #         login(request, form.user)
-    #     return self.get(request, form=form, *args, **kwargs)
-
 
 class SignUpView(FormView):
-    template_name = 'registration/sign_up.html'
+    template_name = 'users/registration/sign_up.html'
     form_class = SignUpModelForm
 
     def form_valid(self, form):
         user = form.save()
         self.request.session['user_id'] = user.id
         messages.success(self.request, f'User {user.email or user.phone} was created')
+
         if user.email:
-            self.success_url = reverse_lazy('sign_up_activation_email')
+            self.success_url = reverse_lazy('activation_email')
         elif user.phone:
-            self.success_url = reverse_lazy('sign_up_confirm_phone')
+            self.success_url = reverse_lazy('confirm_phone')
 
         return super(SignUpView, self).form_valid(form)
 
@@ -61,23 +50,8 @@ class SignUpView(FormView):
         messages.error(self.request, 'Sign Up error')
         return super(SignUpView, self).form_invalid(form)
 
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context.update({'form': kwargs.get('form') or SignUpModelForm})
-    #     return context
-    #
-    # def post(self, request, *args, **kwargs):
-    #     context = self.get_context_data(**kwargs)
-    #     form = context['form']
-    #     form = form(request.POST)
-    #     if form.is_valid():
-    #         new_user = form.save()
-    #         login(request, new_user)
-    #     return self.get(request, form=form, *args, **kwargs)
 
-
-class SignUpConfirmEmailView(RedirectView):
-    url = reverse_lazy('login')
+class ConfirmEmailView(RedirectView):  # SignUpConfirmEmailView
 
     def get(self, request, *args, **kwargs):
         user = self.get_user(kwargs['uidb64'])
@@ -86,12 +60,16 @@ class SignUpConfirmEmailView(RedirectView):
             token = kwargs['token']
 
             if default_token_generator.check_token(user, token):
-                user.is_active = True
+                if not user.is_active:
+                    user.is_active = True
                 user.is_email_valid = True
                 user.save(update_fields=('is_active', 'is_email_valid', ))
-                messages.success(request, 'Confirmation success')
+                messages.success(request, 'Your email successfully confirmed!')
             else:
                 messages.error(request, 'Confirmation error')
+
+        self.url = reverse_lazy('user_profile') if user.last_login else reverse_lazy('login')
+
         return super().get(request, *args, **kwargs)
 
     def get_user(self, uidb64):
@@ -106,28 +84,40 @@ class SignUpConfirmEmailView(RedirectView):
         return user
 
 
-class SignUpConfirmPhoneView(FormView):
-    form_class = SignUpConfirmPhoneForm
-    template_name = 'registration/sign_up_confirm_phone.html'
-    success_url = reverse_lazy('login')
+class ConfirmPhoneView(FormView):  # SignUpConfirmPhoneView
+    form_class = ConfirmPhoneForm
+    template_name = 'users/registration/confirm_phone.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
     def post(self, request, *args, **kwargs):
-        user_id = request.session.get('user_id')
+        user_id = self.request.session.get('user_id') if \
+            self.request.user.is_anonymous else \
+            self.request.user.id
         form = self.get_form()
-        if form.is_valid(session_user_id=user_id):
+        if form.is_valid(user_id=user_id):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        form.save(self.request.session['user_id'])
-        messages.success(self.request, message='Your account was activated,'
-                                               ' you can sign in!')
-        return super(SignUpConfirmPhoneView, self).form_valid(form)
+        user_id = self.request.session.get('user_id') if \
+            self.request.user.is_anonymous else \
+            self.request.user.id
+        user = form.save(user_id)
+        messages.success(self.request, message='Your phone successfully confirmed!')
+
+        self.success_url = reverse_lazy('user_profile') if \
+            user.last_login else \
+            reverse_lazy('login')
+        return super(ConfirmPhoneView, self).form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, message='Please, write valid code!')
-        return super(SignUpConfirmPhoneView, self).form_invalid(form)
+        messages.error(self.request, message='Code error!')
+        return super(ConfirmPhoneView, self).form_invalid(form)
 
 
 class UserProfileView(LoginRequiredMixin, DetailView):
@@ -179,3 +169,36 @@ class UserOrdersView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['order_count'] = self.get_queryset().count()
         return context
+
+
+class ConfirmPhoneEmailProfileView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+
+        confirmation_type = kwargs.get('type')
+        user = self.request.user
+
+        if confirmation_type == 'email':
+            return self.confirm_email(user)
+        elif confirmation_type == 'phone':
+            return self.confirm_phone(user)
+        else:
+            messages.error(self.request, "Invalid confirmation type.")
+            return reverse_lazy('user_profile')
+
+    def confirm_email(self, user):
+        if user.email and not user.is_email_valid:
+            send_confirmation_email(user)
+            messages.success(self.request, "A confirmation was sent to your email.")
+            return reverse_lazy('activation_email')
+        else:
+            messages.error(self.request, "Your email is already verified or not provided.")
+            return reverse_lazy('user_profile')
+
+    def confirm_phone(self, user):
+        if user.phone and not user.is_phone_valid:
+            send_verification_sms(user, user.phone)
+            messages.success(self.request, "A confirmation code was sent to your phone.")
+            return reverse_lazy('confirm_phone')
+        else:
+            messages.error(self.request, "Your phone number is already verified or not provided.")
+            return reverse_lazy('user_profile')
