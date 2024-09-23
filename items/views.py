@@ -114,5 +114,12 @@ class PopularItemsView(ItemsView):
     paginate_by = 2
     
     def get_queryset(self):
-        
-        return super().get_queryset()
+        return PopularItem.objects.all()
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     return context
+    #
+    # def get_query_params(self):
+    #     context = super().get_query_params()
+    #     return context

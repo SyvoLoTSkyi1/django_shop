@@ -9,7 +9,7 @@ def get_category_choices():
 
 
 class ItemFilter(django_filters.FilterSet):
-    price = django_filters.RangeFilter(field_name='price',
+    actual_price = django_filters.RangeFilter(field_name='actual_price',
                                        lookup_expr='range',
                                        label="Price")
     name = django_filters.CharFilter(field_name='name',
@@ -26,11 +26,11 @@ class ItemFilter(django_filters.FilterSet):
 
     class Meta:
         model = Item
-        fields = ['price', 'name', 'category', 'currency']
+        fields = ['actual_price', 'name', 'category', 'currency']
 
 
 class PopularItemFilter(django_filters.FilterSet):
-    price = django_filters.RangeFilter(field_name='item__price',
+    actual_price = django_filters.RangeFilter(field_name='item__actual_price',
                                        lookup_expr='range',
                                        label="Price")
     name = django_filters.CharFilter(field_name='item__name',
@@ -47,4 +47,4 @@ class PopularItemFilter(django_filters.FilterSet):
 
     class Meta:
         model = PopularItem
-        fields = ['price', 'name', 'category', 'currency']
+        fields = ['actual_price', 'name', 'category', 'currency']

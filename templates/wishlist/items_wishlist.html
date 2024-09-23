@@ -41,7 +41,7 @@
                                 {% endif %}
                                 <div class="text-left">
                                     <div class="h5">
-                                        ${{ wishlist_item.item.actual_price }}
+                                        {{ wishlist_item.item.actual_price }} UAH
                                     </div>
                                     <div class="d-flex justify-content-between"><form method="post" action="{% url 'update_cart' 'add' %}">
                                             {% csrf_token %}

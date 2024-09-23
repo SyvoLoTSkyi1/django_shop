@@ -171,7 +171,7 @@ class UserOrdersView(LoginRequiredMixin, ListView):
         return context
 
 
-class ConfirmPhoneEmailProfileView(RedirectView):
+class ConfirmPhoneEmailProfileView(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
 
         confirmation_type = kwargs.get('type')
