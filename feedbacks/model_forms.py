@@ -3,14 +3,18 @@ from feedbacks.models import Feedback
 
 
 class FeedbackModelForm(forms.ModelForm):
+    contact_info = forms.CharField(label="Contact Info", disabled=True)
+
     class Meta:
         model = Feedback
-        fields = ('user', 'text', 'rating')
+        fields = ('contact_info', 'text', 'rating')
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['user'].widget = forms.HiddenInput()
-        self.fields['user'].initial = user
+        self.fields['contact_info'].disabled = True
+        contact_info = user.email if user.email else user.phone
+        self.fields['contact_info'].initial = contact_info
+        self.instance.user = user
 
 
 def check_text(text):

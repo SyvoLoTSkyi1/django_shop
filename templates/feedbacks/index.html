@@ -7,7 +7,7 @@
 
             {% for feedback in feedbacks %}
                 <p>
-                    <span>Email: {{ feedback.user }}</span>
+                    <span>Contact Info: {{ feedback.user.email }}</span>
                     <span>Text: {{ feedback.text }}</span>
                     <span>Rating: {{ feedback.rating }}</span>
                 </p>
@@ -16,17 +16,9 @@
         <div class="container" align="center">
             <h1>Please, leave your feedback:</h1>
             <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                    <label>{{ field.label }}</label>
-                    {{ field }}
-
-                {% endfor %}
-                <input type="submit" value="Add Feedback">
+                {% include 'parts_html/forms/simple_form.html' with form=form %}
+                <input class="btn btn-warning mt-4" type="submit" value="Add Feedback">
             </form>
-            <p>
-                {{ form.errors }}
-            </p>
         </div>
     </section>
 {% endblock content %}

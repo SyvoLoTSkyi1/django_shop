@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from feedbacks.model_forms import FeedbackModelForm, check_text
 from feedbacks.models import Feedback
@@ -16,6 +16,7 @@ def feedbacks(request, *args, **kwargs):
             new_feedback.text = check_text(form.cleaned_data.get("text"))
             messages.success(request, message='Thank you for your feedback!')
             new_feedback.save()
+            return redirect('feedbacks')
         else:
             messages.warning(request, message='Something went wrong!')
 
