@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from users.views import SignUpView, \
     ConfirmEmailView, ConfirmPhoneView, \
     UserProfileView, CustomLoginView, UserProfileUpdateView, \
-    UserOrdersView, ConfirmPhoneEmailProfileView
+    UserOrdersView, ConfirmPhoneEmailProfileView, UserOrderDetailView
 
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
@@ -25,6 +25,8 @@ urlpatterns = [
          UserProfileUpdateView.as_view(), name='user_profile_update'),
     path('profile/orders/',
          UserOrdersView.as_view(), name='user_orders'),
+    path('order/<uuid:pk>/',
+         UserOrderDetailView.as_view(), name='user_order_detail'),
     path('profile/confirm/<str:type>/',
          ConfirmPhoneEmailProfileView.as_view(),
          name='confirm_phone_email_profile'),

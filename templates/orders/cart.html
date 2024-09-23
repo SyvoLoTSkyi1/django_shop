@@ -76,7 +76,7 @@
                                     <td>
                                         <span class="d-inline-block">Total: {{ order.get_total_amount }}</span>
                                     {% if order.discount %}
-                                            <span class="d-inline-block small">(included discount {{ order.discount.code }})</span>
+                                            <span class="d-inline-block small">(included discount {{ order.discount.code }} {{ order.discount.amount|floatformat:0 }} {% if order.discount.discount_type == 1 %}%{% else %}UAH{% endif %})</span>
                                         {% endif %}
                                     </td>
                                     <td></td>

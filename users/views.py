@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import FormView, RedirectView, DetailView, UpdateView, ListView
@@ -169,6 +170,27 @@ class UserOrdersView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['order_count'] = self.get_queryset().count()
         return context
+
+
+class UserOrderDetailView(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = 'users/user_order_detail.html'
+
+    def get_object(self, queryset=None):
+        user = self.request.user
+        order_id = self.kwargs.get('pk')
+        return get_object_or_404(Order, id=order_id, user=user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'order': self.get_object(),
+            'items_relation': self.get_queryset()})
+
+        return context
+
+    def get_queryset(self):
+        return self.get_object().get_items_through()
 
 
 class ConfirmPhoneEmailProfileView(LoginRequiredMixin, RedirectView):

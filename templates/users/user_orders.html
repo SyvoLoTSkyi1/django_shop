@@ -12,7 +12,7 @@
         <ul>
         {% for order in orders %}
             <li>
-                Order ID: {{ order.id }} - Status: {% if order.is_active %} Active {% else %} Paid {% endif %} - Date: {{ order.created_at }}
+                Order ID: {{ order.id }} - Status: {% if order.is_active %} Active {% else %} Paid {% endif %} - Date: {{ order.created_at }} - <a href="{% url 'user_order_detail' order.id %}">Details</a>
             </li>
         {% empty %}
             <p>You have no orders.</p>
