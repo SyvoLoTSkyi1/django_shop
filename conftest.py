@@ -5,14 +5,16 @@ import factory
 import pprintpp
 import pytest
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from django.utils import timezone
 from faker import Faker
 from django.test.client import Client
 from pytest_factoryboy import register
 
-from items.models import Category, Item
+from items.models import Category, Item, PopularItem, Size
 from shop.constants import DECIMAL_PLACES
+from shop.model_choices import Currency
+from wishlist.models import WishlistItem
 
 fake = Faker()
 User = get_user_model()
@@ -37,28 +39,29 @@ def user(db):
     yield user
 
 
-@pytest.fixture(scope='function')
-def item(db):
-    category = Category.objects.create(
-        name='guygiuyguy'
-    )
-
-    image = SimpleUploadedFile(
-        name='test_image.jpg',
-        content=open('C:/IT/drinks.jpg', 'rb').read(),
-        content_type='image/jpeg'
-    )
-
-    item = Item.objects.create(
-        name=fake.word(),
-        category=category,
-        image=image
-    )
-    yield item
+# @pytest.fixture(scope='function')
+# def item(db):
+#     category = Category.objects.create(
+#         name='guygiuyguy'
+#     )
+#
+#     image = SimpleUploadedFile(
+#         name='test_image.jpg',
+#         content=open('C:/IT/drinks.jpg', 'rb').read(),
+#         content_type='image/jpeg'
+#     )
+#
+#     item = Item.objects.create(
+#         name=fake.word(),
+#         category=category,
+#         image=image
+#     )
+#     yield item
 
 
 @pytest.fixture(autouse=True)
 def enable_db_access_for_all_tests(db):
+    print("DB access enabled for all tests")
     __builtins__['pp'] = pprintpp.PrettyPrinter(width=41)
     # code before tests run
     yield
@@ -82,14 +85,29 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 
 
 @register
+class SizeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Size
+        django_get_or_create = ('name',)
+
+    name = factory.Sequence(lambda x: str(fake.random_int(min=35, max=50)))
+
+
+@register
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = get_user_model()
         django_get_or_create = ('email',)
 
     email = factory.Sequence(lambda x: fake.email())
-    first_name = factory.Sequence(lambda x: fake.name())
-    last_name = factory.Sequence(lambda x: fake.name())
+    first_name = factory.Sequence(lambda x: fake.first_name())
+    last_name = factory.Sequence(lambda x: fake.last_name())
+    phone = factory.Sequence(lambda x: fake.phone_number())
+    is_phone_valid = False
+    is_email_valid = False
+    is_staff = False
+    is_active = True
+    date_joined = factory.LazyFunction(timezone.now)
 
 
 @register
@@ -106,19 +124,43 @@ class ItemFactory(factory.django.DjangoModelFactory):
         left_digits=DECIMAL_PLACES,
         right_digits=DECIMAL_PLACES
     ))
+    actual_price = factory.Sequence(lambda x: fake.pydecimal(
+        min_value=1,
+        left_digits=DECIMAL_PLACES,
+        right_digits=DECIMAL_PLACES
+    ))
+    currency = factory.LazyFunction(lambda: fake.random_element(Currency.choices)[0])
     sku = factory.Sequence(lambda x: fake.word())
     category = factory.SubFactory(CategoryFactory)
+    size = factory.RelatedFactoryList(SizeFactory)
 
-    @factory.post_generation
-    def post_create(self, created, *args, **kwargs):
-        if created and not kwargs.get('deny_post'):
-            for _ in range(1, 3):
-                self.items.add(ItemFactory(post_create__deny_post=True))
+    # @factory.post_generation
+    # def post_create(self, created, *args, **kwargs):
+    #     if created and not kwargs.get('deny_post'):
+    #         for _ in range(1, 3):
+    #             self.items.add(ItemFactory(post_create__deny_post=True))
+
+
+@register
+class PopularItemFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = PopularItem
+        django_get_or_create = ('item',)
+
+    item = factory.SubFactory(ItemFactory)
+
+
+@register
+class WishlistItemFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = WishlistItem
+
+    user = factory.SubFactory(UserFactory)
+    item = factory.SubFactory(ItemFactory)
 
 
 @pytest.fixture(scope='function')
 def login_user(db):
-    phone = '123456789'
     password = '123456789'
     # user, _ = User.objects.get_or_create(
     #     email=email,
@@ -126,7 +168,7 @@ def login_user(db):
     #     phone=phone,
     #     is_phone_valid=True
     # )
-    user = UserFactory(phone=phone, is_phone_valid=True)
+    user = UserFactory(is_email_valid=True)
     user.set_password(password)
     user.save()
     client = Client()
@@ -141,7 +183,6 @@ def login_user(db):
 
 @pytest.fixture(scope='function')
 def login_user_is_staff(db):
-    phone = '123456789'
     password = '123456789'
     # user, _ = User.objects.get_or_create(
     #     email=email,
@@ -149,7 +190,7 @@ def login_user_is_staff(db):
     #     phone=phone,
     #     is_phone_valid=True
     # )
-    user = UserFactory(phone=phone, is_phone_valid=True, is_staff=True)
+    user = UserFactory(is_email_valid=True, is_staff=True)
     user.set_password(password)
     user.save()
     client = Client()
