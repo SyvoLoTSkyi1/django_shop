@@ -7,8 +7,9 @@
 
             {% for feedback in feedbacks %}
                 <p>
-                    <span>Contact Info: {{ feedback.user.email }}</span>
-                    <span>Text: {{ feedback.text }}</span>
+                    <span>User: {{ feedback.user.email }}</span>
+                    <span>Date: {{ feedback.created_at }}</span>
+                    <span>Text: {{ feedback.text|linebreaksbr }}</span>
                     <span>Rating: {{ feedback.rating }}</span>
                 </p>
             {% endfor %}
