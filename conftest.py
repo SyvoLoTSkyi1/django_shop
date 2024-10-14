@@ -4,6 +4,7 @@ import os
 import factory
 import pprintpp
 import pytest
+from _decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
@@ -12,8 +13,9 @@ from django.test.client import Client
 from pytest_factoryboy import register
 
 from items.models import Category, Item, PopularItem, Size
+from orders.models import Order, Discount
 from shop.constants import DECIMAL_PLACES
-from shop.model_choices import Currency
+from shop.model_choices import Currency, DiscountTypes
 from wishlist.models import WishlistItem
 
 fake = Faker()
@@ -132,7 +134,15 @@ class ItemFactory(factory.django.DjangoModelFactory):
     currency = factory.LazyFunction(lambda: fake.random_element(Currency.choices)[0])
     sku = factory.Sequence(lambda x: fake.word())
     category = factory.SubFactory(CategoryFactory)
-    size = factory.RelatedFactoryList(SizeFactory)
+
+    @factory.post_generation
+    def size(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for size in extracted:
+                self.size.add(size)
 
     # @factory.post_generation
     # def post_create(self, created, *args, **kwargs):
@@ -157,6 +167,43 @@ class WishlistItemFactory(factory.django.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     item = factory.SubFactory(ItemFactory)
+
+
+@register
+class DiscountFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Discount
+
+    amount = factory.Sequence(lambda x: fake.pydecimal(
+        min_value=1,
+        left_digits=DECIMAL_PLACES,
+        right_digits=DECIMAL_PLACES
+    ))
+    code = factory.Faker('lexify', text='??????')
+    is_active = True
+    discount_type = factory.LazyFunction(lambda: DiscountTypes.VALUE if factory.Faker('boolean') else DiscountTypes.PERCENT)
+
+
+@register
+class OrderFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Order
+
+    user = factory.SubFactory(UserFactory)
+    discount = factory.SubFactory(DiscountFactory)
+
+    total_amount = factory.LazyFunction(lambda: Decimal('0.00'))
+    is_active = True
+    is_paid = False
+
+    @factory.post_generation
+    def items(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for item in extracted:
+                self.items.add(item)
 
 
 @pytest.fixture(scope='function')
