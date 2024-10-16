@@ -190,7 +190,7 @@ class OrderFactory(factory.django.DjangoModelFactory):
         model = Order
 
     user = factory.SubFactory(UserFactory)
-    discount = factory.SubFactory(DiscountFactory)
+    discount = None
 
     total_amount = factory.LazyFunction(lambda: Decimal('0.00'))
     is_active = True

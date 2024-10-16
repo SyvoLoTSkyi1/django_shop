@@ -17,10 +17,10 @@ urlpatterns = [
          login_required(ApplyDiscountView.as_view()),
          name='apply_discount'),
     path('cart/confirm/',
-         ConfirmCartView.as_view(),
+         login_required(ConfirmCartView.as_view()),
          name='confirm_cart'),
     path('cart/confirm/success',
-         SuccessConfirmCartView.as_view(),
+         login_required(SuccessConfirmCartView.as_view()),
          name='success_confirm_cart'),
 
 ]
