@@ -7,14 +7,10 @@ from django.urls import reverse
 User = get_user_model()
 
 
-def test_login_user(client, faker):
-    email = faker.email()
-    password = faker.password()
+def test_login_user_with_email(client, faker, user_factory):
     url = reverse('login')
-    user = User.objects.create(
-        email=email,
-        first_name=faker.first_name()
-    )
+    user = user_factory(is_email_valid=True)
+    password = '123456789'
     user.set_password(password)
     user.save()
     # get login page
@@ -27,14 +23,45 @@ def test_login_user(client, faker):
     # post data to login form
     response = client.post(url, data=data)
     assert response.status_code == 200
-    assert response.context['form'].errors['username'][0] == 'This field is required.'
+
+    assert response.context['form'].errors['__all__'][0] == 'Email or phone number is required'
 
     data['username'] = faker.email()
     response = client.post(url, data=data)
     assert response.status_code == 200
     assert response.context['form'].errors['__all__'][0] == 'Please enter a correct email address and password. Note that both fields may be case-sensitive.'
 
-    data['username'] = email
+    data['username'] = user.email
+    data['password'] = password
+    response = client.post(url, data=data)
+    assert response.status_code == 302
+
+
+def test_login_user_with_phone(client, faker, user_factory):
+    url = reverse('login')
+    user = user_factory(is_phone_valid=True)
+    password = '123456789'
+    user.set_password(password)
+    user.save()
+    # get login page
+    response = client.get(url)
+    assert response.status_code == 200
+
+    data = {
+        'password': faker.password()
+    }
+    # post data to login form
+    response = client.post(url, data=data)
+    assert response.status_code == 200
+
+    assert response.context['form'].errors['__all__'][0] == 'Email or phone number is required'
+
+    data['phone'] = faker.phone_number()
+    response = client.post(url, data=data)
+    assert response.status_code == 200
+    assert response.context['form'].errors['__all__'][0] == 'Please enter a correct email address and password. Note that both fields may be case-sensitive.'
+
+    data['phone'] = user.phone
     data['password'] = password
     response = client.post(url, data=data)
     assert response.status_code == 302

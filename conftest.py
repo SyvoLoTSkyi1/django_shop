@@ -104,7 +104,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.Sequence(lambda x: fake.email())
     first_name = factory.Sequence(lambda x: fake.first_name())
     last_name = factory.Sequence(lambda x: fake.last_name())
-    phone = factory.Sequence(lambda x: fake.phone_number())
+    phone = factory.LazyFunction(lambda: f"+1{fake.random_number(digits=10, fix_len=True)}")
     is_phone_valid = False
     is_email_valid = False
     is_staff = False

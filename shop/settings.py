@@ -190,8 +190,8 @@ CACHES = {
 }
 
 AUTHENTICATION_BACKENDS = [
+    'users.backends.PhoneModelBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'users.backends.PhoneModelBackend'
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
