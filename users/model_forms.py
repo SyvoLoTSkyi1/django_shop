@@ -96,8 +96,21 @@ class SignUpModelForm(UserCreationForm):
         field_classes = {'email': UsernameField}
 
     def clean(self):
+        cleaned_data = super().clean()
         self.instance.is_active = False
+        email = cleaned_data.get('email')
+        phone = cleaned_data.get('phone')
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+
+        if not email and not phone:
+            raise ValidationError('Email or phone number is required')
+        elif not password1 or not password2:
+            raise ValidationError('Enter correct password')
+        elif password1 != password2:
+            raise ValidationError('Password1 not equal password2')
         return self.cleaned_data
+
 
     def save(self, commit=True):
         user = super().save(commit=commit)
