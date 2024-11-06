@@ -28,17 +28,17 @@ def faker():
     yield fake
 
 
-@pytest.fixture(scope='function')
-def user(db):
-    user, _ = User.objects.get_or_create(
-        email='user1@gmail.com',
-        first_name='John',
-        phone='123456789',
-        is_phone_valid=True
-    )
-    user.set_password('123456789')
-    user.save()
-    yield user
+# @pytest.fixture(scope='function')
+# def user(db):
+#     user, _ = User.objects.get_or_create(
+#         email='user1@gmail.com',
+#         first_name='John',
+#         phone='123456789',
+#         is_phone_valid=True
+#     )
+#     user.set_password('123456789')
+#     user.save()
+#     yield user
 
 
 # @pytest.fixture(scope='function')
