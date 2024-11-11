@@ -1,14 +1,27 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
     <section class="main">
-    <div class="container">
+    <div class="bg-dark text-white text-center py-5" style="height: 40vh; display: flex; align-items: center;">
+        <div class="container">
+            <h1 class="display-4">Super Shop</h1>
+            <p class="lead">Your ability to shop in style with Super Shop</p>
+        </div>
+    </div>
+    <div class="bg-white py-5">
         <div class="row">
-            <div class="col">
+            <div class="col col-lg-7 p-5">
                 <h1>Main</h1>
-            </div>
-            <div class="col">
+                <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
 
+                <p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+
+                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed lacus eu odio viverra dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed enim tortor, blandit et dui id, pulvinar suscipit sapien. Pellentesque at congue arcu. Nunc interdum tellus nibh, ultricies ullamcorper mi ullamcorper sed. Duis massa turpis, fringilla placerat eleifend vel, varius tristique dolor. Donec varius neque ex, et efficitur dui placerat vel. Nam a nisl tincidunt, euismod ex at, blandit magna. Quisque id porta nibh. Phasellus tempus sollicitudin lacus, in ullamcorper diam blandit ac.</p>
+            </div>
+            <div class="col-md-5 text-center">
+                <img src="{% static 'images/11.jpg' %}" alt="Right Side Image" class="img-fluid" style="max-height: 700px;">
             </div>
         </div>
     </div>
