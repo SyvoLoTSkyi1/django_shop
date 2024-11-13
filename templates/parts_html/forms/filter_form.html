@@ -1,8 +1,26 @@
 {% load widget_tweaks %}
-
-{% for field in form %}
-
-    <label>{{ field.label }}</label>
-    {{ field|add_class:'form-select' }}
-
-{% endfor %}
+<div class="row g-4 justify-content-center">
+    {% for field in form %}
+        {% if field.name == 'actual_price' %}
+            <div class="col-auto ps-5">
+                <label class="form-label">Min Price</label>
+                <input type="number"
+                       name="actual_price_min"
+                       class="form-control form-control-sm"
+                       value="{{ request.GET.actual_price_min }}">
+            </div>
+            <div class="col-auto pe-5">
+                <label class="form-label">Max Price</label>
+                <input type="number"
+                       name="actual_price_max"
+                       class="form-control form-control-sm"
+                       value="{{ request.GET.actual_price_max }}">
+            </div>
+        {% else %}
+            <div class="col-auto px-5">
+                <label class="form-label">{{ field.label }}</label>
+                {{ field|add_class:'form-control form-control-sm' }}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

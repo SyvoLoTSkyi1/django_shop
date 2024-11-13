@@ -1,0 +1,45 @@
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li class="page-item pe-4">
+            <a class="page-link px-4 border border-secondary-subtle text-dark"
+               href="?{% if query_params %}{{ query_params }}&{% endif %}page=1">&#10094;&#10094;
+            </a>
+        </li>
+        <li class="page-item pe-5">
+            <a class="page-link px-4 border border-secondary-subtle text-dark"
+               href="?{% if query_params %}{{ query_params }}&{% endif %}page={{ page_obj.previous_page_number }}">&#10094;
+            </a>
+        </li>
+    {% endif %}
+    {% for i in "x"|rjust:page_obj.paginator.num_pages   %}
+        <li class="page-item px-3 {% if forloop.counter == page_obj.number %}active{% endif %}">
+            <a class="page-link px-4
+                {% if forloop.counter == page_obj.number %}
+                    bg-secondary-subtle border border-white text-dark
+                {% else %}
+                    border border-secondary-subtle text-dark{% endif %}"
+                href="?{% if query_params %}{{ query_params }}&{% endif %}page={{ forloop.counter }}">
+                {{ forloop.counter }}
+            </a>
+        </li>
+    {% endfor %}
+    {% if page_obj.has_next %}
+        <li class="page-item ps-5">
+            <a class="page-link px-4 border border-secondary-subtle text-dark"
+               href="?{% if query_params %}{{ query_params }}&{% endif %}page={{ page_obj.next_page_number }}">&#10095;
+            </a>
+        </li>
+        <li class="page-item ps-4">
+            <a class="page-link px-4 border border-secondary-subtle text-dark"
+               href="?{% if query_params %}{{ query_params }}&{% endif %}page={{ page_obj.paginator.num_pages }}">&#10095;&#10095;
+            </a>
+        </li>
+    {% else %}
+        <li class="page-item ps-5">
+            <a class="page-link px-4 border border-secondary-subtle text-dark d-none">&#10095;</a>
+        </li>
+        <li class="page-item ps-4">
+            <a class="page-link px-4 border border-secondary-subtle text-dark  d-sm-block">&#10095;&#10095;</a>
+        </li>
+    {% endif %}
+</ul>

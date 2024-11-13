@@ -16,7 +16,7 @@ from wishlist.models import WishlistItem
 
 class ItemsView(FilterView):
     model = Item
-    paginate_by = 2
+    paginate_by = 6
     filterset_class = ItemFilter
     template_name_suffix = '_list'
 
