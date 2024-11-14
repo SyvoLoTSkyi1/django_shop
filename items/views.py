@@ -47,6 +47,23 @@ class ItemsView(FilterView):
 class ItemDetail(DetailView):
     model = Item
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item = self.get_object()
+
+        similar_items = Item.objects.filter(category=item.category).exclude(id=item.id)[:3]
+        if self.request.user.is_authenticated:
+            wishlist_items = WishlistItem.objects.filter(user=self.request.user).\
+                values_list('item_id', flat=True)
+        else:
+            wishlist_items = []
+        context.update({
+            'wishlist_items': wishlist_items,
+            'similar_items': similar_items
+            })
+
+        return context
+
 
 @login_required
 def export_csv(request, *args, **kwargs):
@@ -111,7 +128,7 @@ class PopularItemsView(ItemsView):
     model = PopularItem
     template_name = 'items/popular_items.html'
     filterset_class = PopularItemFilter
-    paginate_by = 2
+    paginate_by = 6
     
     def get_queryset(self):
         return PopularItem.objects.all()

@@ -10,6 +10,13 @@
                href="?{% if query_params %}{{ query_params }}&{% endif %}page={{ page_obj.previous_page_number }}">&#10094;
             </a>
         </li>
+    {% else %}
+        <li class="page-item pe-4 disabled">
+            <a class="page-link px-4 bg-light text-secondary">&#10094;&#10094;</a>
+        </li>
+        <li class="page-item pe-5 disabled">
+            <a class="page-link px-4 bg-light text-secondary">&#10094;</a>
+        </li>
     {% endif %}
     {% for i in "x"|rjust:page_obj.paginator.num_pages   %}
         <li class="page-item px-3 {% if forloop.counter == page_obj.number %}active{% endif %}">
@@ -35,11 +42,11 @@
             </a>
         </li>
     {% else %}
-        <li class="page-item ps-5">
-            <a class="page-link px-4 border border-secondary-subtle text-dark d-none">&#10095;</a>
+        <li class="page-item ps-5 disabled">
+            <a class="page-link px-4 bg-light text-secondary">&#10095;</a>
         </li>
-        <li class="page-item ps-4">
-            <a class="page-link px-4 border border-secondary-subtle text-dark  d-sm-block">&#10095;&#10095;</a>
+        <li class="page-item ps-4 disabled">
+            <a class="page-link px-4 bg-light text-secondary">&#10095;&#10095;</a>
         </li>
     {% endif %}
 </ul>
