@@ -1,25 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <section class="feedbacks">
-        <div class="container" align="center">
-            <h1>Feedbacks:</h1>
-
-            {% for feedback in feedbacks %}
-                <p>
-                    <span>User: {{ feedback.user.email }}</span>
-                    <span>Date: {{ feedback.created_at }}</span>
-                    <span>Text: {{ feedback.text|linebreaksbr }}</span>
-                    <span>Rating: {{ feedback.rating }}</span>
-                </p>
-            {% endfor %}
-        </div>
-        <div class="container" align="center">
-            <h1>Please, leave your feedback:</h1>
+    <section class="feedbacks py-5">
+        <div class="container mb-5">
+            <h4 class="text-left mb-4">Leave Your Feedback</h4>
             <form method="post">
                 {% include 'parts_html/forms/simple_form.html' with form=form %}
-                <input class="btn btn-warning mt-4" type="submit" value="Add Feedback">
+                <div class="text-center">
+                    <input class="btn btn-secondary mt-3 w-100" type="submit" value="Submit Feedback">
+                </div>
             </form>
+        </div>
+
+        <div class="container mt-5">
+            <h4 class="text-left mb-4">Customer Feedbacks</h4>
+            <div class="row justify-content-center">
+                {% for feedback in feedbacks %}
+                    <div class="col-12 mb-4">
+                        <div class="card p-3 border-1 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">User: {{ feedback.user.email }}</h5>
+                                <p class="card-text">
+                                    <small class="text-muted">Date: {{ feedback.created_at }}</small>
+                                </p>
+                                <p class="card-text">{{ feedback.text|linebreaksbr }}</p>
+                                <div class="rating">
+                                    <span class="text-warning">
+                                        {% if feedback.rating >= 1 %}&#9733;{% else %}&#9734;{% endif %}
+                                        {% if feedback.rating >= 2 %}&#9733;{% else %}&#9734;{% endif %}
+                                        {% if feedback.rating >= 3 %}&#9733;{% else %}&#9734;{% endif %}
+                                        {% if feedback.rating >= 4 %}&#9733;{% else %}&#9734;{% endif %}
+                                        {% if feedback.rating >= 5 %}&#9733;{% else %}&#9734;{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </section>
 {% endblock content %}
