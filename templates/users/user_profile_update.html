@@ -1,21 +1,143 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
-
-    <div class="row">
-        <div class="col-12 col-lg-3 ">
-            <div class="row my-3 p-3">
-                <h3>Edit Profile</h3>
-            </div>
-            <div class="user-info p-3">
-                <form method="post">
-                    {% include 'parts_html/forms/simple_form.html' with form=form %}
-                    <h6 class="user-date-joined">Date joined: {{ user.date_joined }}</h6>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
+    <section class="user-profile p-5">
+        <div class="container">
+            <div class="row gy-5">
+                <!-- Card 1: Navigation -->
+                <div class="col-12 col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-4">Personal Profile</h5>
+                            <div class="d-flex flex-column gap-3">
+                                <a href="{% url 'user_orders' %}" class="btn btn-light rounded-0">My Orders</a>
+                                <a href="{% url 'contacts' %}" class="btn btn-light rounded-0">Contact Us</a>
+                                <a href="{% url 'wishlist' %}" class="btn btn-light rounded-0">Wishlist</a>
+                                <hr>
+                                <a href="{% url 'logout' %}" class="btn btn-light rounded-0">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2: Personal Information and Address -->
+                <div class="col-12 col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <!-- Personal Information Form -->
+                            <h5 class="card-title mb-4">Edit Personal Information</h5>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% for field in form.visible_fields %}
+                                            {% if field.name in "first_name last_name" %}
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="form-label text-muted">{{ field.label }}:</label>
+                                                    {{ field|add_class:"form-control form-control-sm" }}
+                                                    {% if field.help_text %}
+                                                        <div class="form-text">{{ field.help_text }}</div>
+                                                    {% endif %}
+                                                    {% if field.errors %}
+                                                        <ul class="text-danger small">
+                                                            {% for error in field.errors %}
+                                                                <li>{{ error }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <div class="mt-3">
+                                            <span class="text-muted">Date Joined:</span>
+                                            <div>{{ user.date_joined }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% for field in form.visible_fields %}
+                                            {% if field.name in "email phone" %}
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="form-label text-muted">{{ field.label }}:</label>
+                                                    {{ field|add_class:"form-control form-control-sm" }}
+                                                    {% if field.help_text %}
+                                                        <div class="form-text">{{ field.help_text }}</div>
+                                                    {% endif %}
+                                                    {% if field.errors %}
+                                                        <ul class="text-danger small">
+                                                            {% for error in field.errors %}
+                                                                <li>{{ error }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <h5 class="card-title mb-3">Edit Address Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% for field in form.visible_fields %}
+                                            {% if field.name in "country city" %}
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="form-label text-muted">{{ field.label }}:</label>
+                                                    {{ field|add_class:"form-control form-control-sm" }}
+                                                    {% if field.help_text %}
+                                                        <div class="form-text">{{ field.help_text }}</div>
+                                                    {% endif %}
+                                                    {% if field.errors %}
+                                                        <ul class="text-danger small">
+                                                            {% for error in field.errors %}
+                                                                <li>{{ error }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% for field in form.visible_fields %}
+                                            {% if field.name == "address" %}
+                                                <div class="form-group mb-3">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="form-label text-muted">{{ field.label }}:</label>
+                                                    {{ field|add_class:"form-control form-control-sm" }}
+                                                    {% if field.help_text %}
+                                                        <div class="form-text">{{ field.help_text }}</div>
+                                                    {% endif %}
+                                                    {% if field.errors %}
+                                                        <ul class="text-danger small">
+                                                            {% for error in field.errors %}
+                                                                <li>{{ error }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% if form.non_field_errors %}
+                                    <div class="mb-2">
+                                        <ul class="text-danger small">
+                                            {% for error in form.non_field_errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                                <button type="submit" class="btn btn-secondary rounded-0 mt-3">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
+    </section>
 {% endblock content %}
