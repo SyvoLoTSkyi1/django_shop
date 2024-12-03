@@ -11,3 +11,8 @@ ul.messages{
     right: 5%;
     z-index: 9;
 }
+
+.custom-bg-color {
+    background-color: #003333; /* Ваш кастомний колір фону */
+
+}
