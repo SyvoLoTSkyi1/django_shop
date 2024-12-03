@@ -49,7 +49,7 @@ def send_confirmation_email(user):
         'is_registration': not user.is_active
     }
     subject_template_name = 'users/registration/confirm_subject.txt'  # noqa
-    email_template_name = 'users/registration/confirm_email.html'  # noqa
+    email_template_name = 'users/registration/confirm_email_text.html'  # noqa
     send_html_mail(
         subject_template_name,
         email_template_name,
