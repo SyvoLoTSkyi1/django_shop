@@ -39,16 +39,16 @@
                                                 class="updateWishlist text-secondary"
                                                 aria-current="page">
                                             <svg xmlns="http://www.w3.org/2000/svg"
-                                                 width="16"
-                                                 height="16"
+                                                 width="20"
+                                                 height="20"
                                                  fill="currentColor"
                                                  class="bi bi-heart-fill {% if not popular_item.item.id in wishlist_items %}d-none{% endif %}"
                                                  viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                                             </svg>
                                             <svg xmlns="http://www.w3.org/2000/svg"
-                                                 width="16"
-                                                 height="16"
+                                                 width="20"
+                                                 height="20"
                                                  fill="currentColor"
                                                  class="bi bi-heart {% if popular_item.item.id in wishlist_items %}d-none{% endif %}"
                                                  viewBox="0 0 16 16">
@@ -58,7 +58,6 @@
                                     </p>
                                     <h5 class="card-title"><a href="{% url 'item_detail' popular_item.item.id  %}" class="text-dark text-decoration-none">{{ popular_item.item.name }}</a></h5>
                                     <p class="card-text small">
-{#                                        {{ item.description|truncatechars:16 }}<br>#}
                                         {% if popular_item.item.items.exists %}
                                             <p>Including:</p>
                                             {% for sub in popular_item.item.items.iterator %}
