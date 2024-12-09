@@ -73,7 +73,7 @@ User = get_user_model()
 #             'subject': 'Sign up confirm'
 #         }
 #         subject_template_name = 'registration/confirm_subject.txt'
-#         email_template_name = 'registration/confirm_email.html'
+#         email_template_name = 'registration/confirm_email_text.html'
 #         send_html_mail(
 #             subject_template_name,
 #             email_template_name,

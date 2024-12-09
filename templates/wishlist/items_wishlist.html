@@ -1,69 +1,58 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}
     Wishlist
 {% endblock %}
+
 {% block content %}
-   <section>
+    <section class="py-5">
         <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-normal mb-0 text-black">Wishlist</h3>
-            </div>
-            <div class="row">
+            <div class="row ">
+                <h3 class="text-left mb-4">Your wishlist</h3>
                 {% for wishlist_item in object_list %}
                     <div class="col {% if wishlist_item.item.items.exists %}col-lg-7{% else %}col-lg-4{% endif %}">
-                        <div class="card mb-3">
-                            {% if wishlist_item.item.image %}
+                        <div class="mb-3">
+                            <div class="card border-white" style="max-height: 600px;">
                                 <figure class="text-center">
-                                    <img style="max-height: 250px;" src="{{ wishlist_item.item.image.url }}"
+                                    <img style="max-height: 420px;" src="{{ wishlist_item.item.image.url }}"
                                          class="item-image p-3"
                                          alt="{{ wishlist_item.item.name }}">
                                 </figure>
-                            {% endif %}
-                            <div class="card-body">
-                                <h6 class="card-title">{{ wishlist_item.item.name }}</h6>
-                                <p class="small">{{ wishlist_item.item.category.name }}</p>
-                                <p class="small">
-                                    {{ wishlist_item.item.description|truncatewords:16 }}
-                                </p>
-                                {% if wishlist_item.item.items.exists %}
-                                    <p>Including:</p>
-                                    {% for sub in wishlist_item.item.items.iterator %}
-                                        <div class="d-inline-flex flex-column rounded border p-2">
-                                            <p>{{ sub.name }}</p>
-                                            <figure class="text-center d-inline">
-                                                <img src="{{ sub.image.url }}"
-                                                     class="product-image p-3"
-                                                     alt="{{ wishlist_item.item.name }}">
-                                            </figure>
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-                                <div class="text-left">
-                                    <div class="h5">
+                                <div class="card-body">
+                                    <p class="d-flex justify-content-between align-items-center">
+                                        <span class="h6 card-subtitle text-muted">{{ wishlist_item.item.category.name }}</span>
+                                        <a href="javascript:void(0);"
+                                           class="updateWishlist"
+                                           aria-current="page"
+                                           data-item="{{ wishlist_item.item.id }}">
+                                            <button class="btn btn-sm text-danger" type="submit">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </a>
+                                    </p>
+                                    <h5 class="card-title"><a href="{% url 'item_detail' wishlist_item.item.id %}"
+                                                              class="text-dark text-decoration-none">{{ wishlist_item.item.name }}</a>
+                                    </h5>
+                                    <p class="card-text small">
+                                        {% if wishlist_item.item.items.exists %}
+                                            <p>Including:</p>
+                                            {% for sub in wishlist_item.item.items.iterator %}
+                                                <p>{{ sub.name }}</p>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </p>
+                                    <p class="h5">
                                         {{ wishlist_item.item.actual_price }} UAH
-                                    </div>
-                                    <div class="d-flex justify-content-between"><form method="post" action="{% url 'update_cart' 'add' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" value="{{ wishlist_item.item.id }}" name="item">
-                                            <input type="submit" class="btn btn-primary" value="Add to cart">
-                                        </form>
-                                    <a href="javascript:void(0);"
-                                       class="updateWishlist"
-                                       aria-current="page"
-                                       data-item="{{ wishlist_item.item.id }}">
-                                        <button type="submit" class="btn btn-outline-danger">Delete</button>
-                                    </a>
-                                    </div>
+                                    </p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 {% empty %}
                     <h3>Your wishlist is empty.</h3>
-                        <p>Go to <a href="{% url 'items' %}">items</a>
-                            page and add something good to wishlist.</p>
+                    <p>Go to <a href="{% url 'items' %}">items</a>
+                        page and add something good to wishlist.</p>
                 {% endfor %}
             </div>
         </div>
@@ -71,7 +60,7 @@
 {% endblock content %}
 {% block scripts %}
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.updateWishlist').click(function () {
                 updateWishlist($(this), 'remove')
             })

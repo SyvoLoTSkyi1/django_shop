@@ -13,7 +13,7 @@ urlpatterns = [
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
     path('activation/email/',
          TemplateView.as_view(
-             template_name='users/registration/activation_email.html'),
+             template_name='users/registration/confirm_email.html'),
              name='activation_email'),
     path('email/<uidb64>/<token>/confirm/',
          ConfirmEmailView.as_view(), name='confirm_email'),

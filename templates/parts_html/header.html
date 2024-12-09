@@ -1,64 +1,62 @@
 {% load static %}
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-color-custom py-3" >
   <div class="container-fluid">
-{#    <a class="navbar-brand" href="#">#}
-{#        <img class="logo" src="{% static 'images/images.png' %}" alt="logo" >#}
-{#    </a>#}
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
+        <li class="nav-item mx-3">
           <a class="nav-link active" aria-current="page" href="{% url 'main' %}">Home</a>
         </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="{% url 'items' %}">Items</a>
-          </li>
-        <li class="nav-item">
-           <a class="nav-link active" href="{% url 'popular_items' %}">Popular</a>
-         </li>
-        {% if not request.user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Login</a>
+        <li class="nav-item mx-3">
+          <a class="nav-link active" href="{% url 'items' %}">Items</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="{% url 'sign_up' %}">Sign Up</a>
+        <li class="nav-item mx-3">
+          <a class="nav-link active" href="{% url 'popular_items' %}">Popular</a>
         </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="nav-link active" href="{% url 'feedbacks' %}">Feedbacks</a>
-          </li>
-         <li class="nav-item">
-           <a class="nav-link active" href="{% url 'logout' %}">Logout</a>
-         </li>
-         <li class="nav-item">
-           <a class="nav-link active" href="{% url 'cart' %}">Cart</a>
-         </li>
-         <li class="nav-item">
-           <a class="nav-link active" href="{% url 'wishlist' %}">Wishlist</a>
-         </li>
-         <li class="nav-item">
-           <a class="nav-link active" href="{% url 'contacts' %}">Contact Us</a>
-         </li>
-         <li class="nav-item">
-           <a class="nav-link active" href="{% url 'import_csv' %}">Import CSV</a>
-         </li>
-         <li class="nav-item">
-           <a class="nav-link active" href="{% url 'user_profile' %}">Profile</a>
-         </li>
-        {% endif %}
+        <li class="nav-item mx-3">
+          <a class="nav-link active" href="{% url 'feedbacks' %}">Feedbacks</a>
+        </li>
+        <li class="nav-item mx-3">
+          <a class="nav-link active" href="{% url 'contacts' %}">Contact Us</a>
+        </li>
+        <li class="nav-item mx-3">
+          <a class="nav-link" href="{% url 'import_csv' %}">Import CSV</a>
+        </li>
       </ul>
       <form class="d-flex" method="get" action="{% url 'item_search' %}">
-         {% csrf_token %}
-         <input class="form-control me-2"
+        {% csrf_token %}
+        <div class="input-group">
+            <input
+                class="form-control"
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
                 name="query"
                 value="{{ query }}">
-          <button class="btn btn-outline-secondary" type="submit">Search</button>
+            <button class="btn btn-custom-header " type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
       </form>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item mx-3">
+           <a class="nav-link active"
+              href="{% url 'user_profile' %}">
+               {% if request.user.is_authenticated %}
+                   <i class="bi bi-person-fill"></i>
+               {% else %}<i class="bi bi-person"></i>{% endif %}</a>
+        </li>
+        <li class="nav-item mx-3">
+           <a class="nav-link active" href="{% url 'wishlist' %}"><i class="bi bi-heart-fill"></i></a>
+        </li>
+        <li class="nav-item mx-3">
+           <a class="nav-link active" href="{% url 'cart' %}"><i class="bi bi-bag-fill"></i></a>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>

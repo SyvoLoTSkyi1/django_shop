@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,9 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Title</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <link href="{% static 'style.css' %}" rel="stylesheet">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
+
 {% block messages %}
     {% include 'parts_html/messages.html' %}
 {% endblock messages %}
@@ -17,9 +20,11 @@
     {% include "parts_html/header.html" %}
 {% endblock header %}
 
-{% block content %}
+<div class="flex-grow-1" style="min-height: calc(100vh + 100px);">
+    {% block content %}
 
-{% endblock content %}
+    {% endblock content %}
+</div>
 
 {% block footer %}
     {% include "parts_html/footer.html" %}

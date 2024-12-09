@@ -4,20 +4,43 @@
     My Orders
 {% endblock %}
 {% block content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h3 class="mb-4">My Orders</h3>
+                <p class="text-muted">You have <span class="fw-bold">{{ order_count }}</span> orders in total.</p>
+            </div>
+        </div>
 
-    <div class="row my-3 p-3">
-        <h3>My Orders (Total: {{ order_count }})</h3>
+        <div class="row g-4">
+            {% if orders %}
+                {% for order in orders %}
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card shadow-sm">
+                            <div class="card-body p-4">
+                                <h4 class="card-title mb-3">Order #{{ order.id }}</h4>
+                                <p class="card-text text-muted">Placed on: <span
+                                        class="fw-bold">{{ order.created_at }}</span></p>
+                                <p class="card-text mb-3">
+                                    Total: {{ order.total_amount }} UAH
+                                </p>
+                                <p class="mb-4">
+                                    Status:
+                                    <span class="badge {% if order.is_active %}bg-success{% else %}bg-dark{% endif %}">
+                                    {% if order.is_active %}Active{% else %}Paid{% endif %}
+                                </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col">
+                    <div class="alert alert-info text-center">
+                        <p class="mb-0">You have no orders at the moment.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
     </div>
-    <div class="user-orders p-3">
-        <ul>
-        {% for order in orders %}
-            <li>
-                Order ID: {{ order.id }} - Status: {% if order.is_active %} Active {% else %} Paid {% endif %} - Date: {{ order.created_at }} - <a href="{% url 'user_order_detail' order.id %}">Details</a>
-            </li>
-        {% empty %}
-            <p>You have no orders.</p>
-        {% endfor %}
-        </ul>
-    </div>
-
 {% endblock content %}

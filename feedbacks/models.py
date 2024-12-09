@@ -30,7 +30,7 @@ class Feedback(PKMixin):
         feedbacks = cache.get(cls._cache_key())
         print('BEFORE ', feedbacks)
         if not feedbacks:
-            feedbacks = Feedback.objects.all()
+            feedbacks = Feedback.objects.all().order_by('-created_at')
             cache.set(cls._cache_key(), feedbacks)
             print('AFTER ', feedbacks)
         return feedbacks

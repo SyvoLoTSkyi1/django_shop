@@ -1,84 +1,99 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-lg-8 offset-lg-2">
+    <section style="padding: 50px">
+        <div class="">
+            <div class="row gx-5">
+
+                <div class="col-12 col-lg-5 mb-5 mb-lg-0 mx-5">
+                    <h3 class="mb-4">User Information</h3>
+                    <div class="card p-4 border-1 shadow-sm">
+                        <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% include 'parts_html/forms/simple_form.html' with form=form %}
+                        <button type="submit" class="btn btn-dark w-100  mt-3">Update User</button>
+                        <button type="submit" formaction="{% url 'update_cart' 'pay' %}"
+                                class="btn btn-custom w-100 mt-3">
+                            Pay Order
+                        </button>
+                    </form></div></div>
+                </div>
+
+
+                <div class="col-12 col-lg-6 ms-3 mt-5">
+                    <h3 class="mb-4">Shopping Cart</h3>
                     {% if order.items.exists %}
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Item</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Size</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <form method="post"
-                                  action="{% url 'recalculate_cart' %}"
-                                  id="recalculateCart">
-                                {% csrf_token %}
-                                {% for item_relation in items_relation.iterator %}
-                                     <tr>
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td>{{ item_relation.item.name }}</td>
-                                        <td>{{ item_relation.quantity }}</td>
-                                        <td>{{ item_relation.size.name }}</td>
-                                        <td>{{ item_relation.item.actual_price }}</td>
-                                        <td>{{ item_relation.full_price }}</td>
-                                     </tr>
-                                {% endfor %}
-                                <tr>
-                                    <td colspan="5">
-                                        <span class="d-inline-block">Total: {{ order.get_total_amount }}</span>
-                                    {% if order.discount %}
-                                            <span class="d-inline-block small">(included discount {{ order.discount.code }} {{ order.discount.amount|floatformat:0 }} {% if order.discount.discount_type == 1 %}%{% else %}UAH{% endif %})</span>
+                        {% for item_relation in items_relation.iterator %}
+                            <div class="card border-1 shadow-sm mb-4" style="font-size: 0.85rem;">
+                                <div class="row g-0">
+
+                                    <div class="col-4 col-md-3">
+                                        <img src="{{ item_relation.item.image.url }}" class="img-fluid rounded-start"
+                                             alt="{{ item_relation.item.name }}">
+                                    </div>
+
+                                    <div class="col-8 col-md-9">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title"
+                                                style="font-size: 1rem;">{{ item_relation.item.name }}</h5>
+                                            <p class="card-text mb-1">
+                                                <strong>Size:</strong> {{ item_relation.size.name }}</p>
+                                            <p class="card-text mb-1">
+                                                <strong>Price:</strong> {{ item_relation.item.actual_price }} UAH</p>
+                                            <p class="card-text mb-1">
+                                                <strong>Quantity:</strong> {{ item_relation.quantity }}</p>
+                                            <p class="card-text mb-1">
+                                                <strong>Subtotal:</strong> {{ item_relation.full_price }} UAH</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div class="d-flex flex-column align-items-end border-top pt-3">
+                            <h5>Total: {{ order.get_total_amount }} UAH</h5>
+
+                            {% if not order.discount %}
+                                <form method="post" class="mt-3 align-items-right" action="{% url 'apply_discount' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group">
+                                        <input type="text" name="code" class="form-control"
+                                               placeholder="Enter discount code">
+                                        <button type="submit" class="btn btn-dark">Apply</button>
+                                    </div>
+                                </form>
+                            {% else %}
+                                <div class="mt-3 alert alert-success">
+                                    <strong>Discount Applied:</strong>
+                                    <span class="text-success">{{ order.discount.code }}</span>
+                                    -
+                                    {% if order.discount.discount_type != DiscountTypes.VALUE %}
+                                        <span>{{ order.discount.amount|floatformat:0 }} %</span>
+                                    {% else %}
+                                        <span>{{ order.discount.amount }} UAH</span>
                                     {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Want to update order?</td>
-                                    <td colspan="2">
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'cart' %}">Click here</a>
-                                    </td>
-                                </tr>
-                                {% if not order.discount %}
-                                    <tr>
-                                        <td colspan="2">Have discount?</td>
-                                        <td colspan="2">
-                                            <input type="text"
-                                                   class="form-control"
-                                                   name="code"
-                                                   placeholder="Enter discount code here">
-                                        </td>
-                                        <td>
-                                            <input class="btn btn-secondary"
-                                                   type="submit"
-                                                   value="Apply discount"
-                                                   formaction="{% url 'apply_discount' %}">
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            </form>
-                            </tbody>
-                        </table>
-                        <div class="user-info mt-5">
-                            <h3>User Information</h3>
-                            <form method="post">
-                                {% include 'parts_html/forms/simple_form.html' with form=form %}
-                                <input class="btn btn-warning mt-4" type="submit" value="Update User">
-                                <input class="btn btn-warning w-100 mt-4" type="submit"
-                                       value="Pay Order"  formaction="{% url 'update_cart' 'pay' %}">
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mt-5">
+                            <p class="d-flex align-items-center">
+                                <i class="bi bi-shield-check fs-3 me-2 text-secondary"></i> Only the original
+                            </p>
+                            <p class="d-flex align-items-center">
+                                <i class="bi bi-truck fs-3 me-2 text-secondary"></i> Fast delivery
+                            </p>
+                            <p class="d-flex align-items-center">
+                                <i class="bi bi-arrow-repeat fs-3 me-2 text-secondary"></i> Easy exchange and return
+                            </p>
                         </div>
                     {% else %}
-                        <h3>Your cart is empty.</h3>
-                        <p>Goto <a href="{% url 'items' %}">items</a> page and add something good to cart.</p>
+                        <div class="alert alert-info text-center">
+                            <h4 style="font-size: 1rem;">Your cart is empty.</h4>
+                            <p>Visit the <a href="{% url 'items' %}" class="text-decoration-underline">items</a> page to
+                                add products.</p>
+                        </div>
                     {% endif %}
                 </div>
             </div>

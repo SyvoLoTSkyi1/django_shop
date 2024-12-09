@@ -2,59 +2,150 @@
 {% load static %}
 
 {% block content %}
-    <section>
-        <div class="container">
-            <div class="col">
-                <div class="col {% if item.items.exists %}col-lg-6{% else %}col-lg-3{% endif %}">
-                    <div class="card mb-3">
-                        <div class="card border-primary"
-                                 style="width: 20.2rem;">
-                                <img src="{{ item.image.url }}"
-                                     class="product-image p-3"
-                                     alt="{{ image.name }}">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ item.name }}</h5>
-                            <p class="small">{{ item.category.name }}</p>
-                            <p class="small">{{ item.sku }}</p>
-                            <p class="card-text">
-                                {{ item.description }}
-                            </p>
-                            {% if item.items.exists %}
-                                <p>Including:</p>
-                                {% for sub in item.items.iterator %}
-                                    <div class="d-inline-flex flex-column rounded border p-2">
-                                        <p>{{ sub.name }}</p>
-                                        <figure class="text-center d-inline">
-                                            <img src="{{ sub.image.url }}"
-                                                 class="product-image p-3"
-                                                 alt="{{ item.name }}">
-                                        </figure>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                            <div class="h3">
-                                ${{ item.price }}
-                            </div>
-                            <form method="post" action="{% url 'update_cart' 'add' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="item" value="{{ item.id }}">
-
-                                <label for="size">Choose a size:</label>
-                                <select name="size" id="size" required>
-                                    <option value="" selected disabled>Select a size</option>
-                                    {% for size in item.size.all|dictsort:"created_at" %}
-                                        <option value="{{ size.id }}">{{ size.name }}</option>
-                                    {% endfor %}
-                                </select>
-
-                                <button type="submit" class="btn btn-primary mt-2">Add to Cart</button>
-                            </form>
-                        </div>
+    <section class="item">
+        <div class="container my-5">
+            <div class="row">
+                <div class="col-md-6 me-5">
+                    <div class="card">
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
                     </div>
                 </div>
+                <div class="col-md-5">
+                    <h2 class="fw-bold">{{ item.name }}</h2>
+                    <p class="text-muted">{{ item.sku }}</p>
+                    <p class="text-secondary">Category: {{ item.category.name }}</p>
+                    <div class="my-5">
+                        <h4 class="fw-bold text-dark">{{ item.actual_price }} UAH</h4>
+                    </div>
+                    <div class="mb-4">
+                        <form method="post" action="{% url 'update_cart' 'add' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="item" value="{{ item.id }}">
 
+                            <a href="#" class="text-dark">Dimensional grid</a>
+                            <select name="size" id="size" class="form-select my-3" required>
+                                <option value="" selected disabled>Select a size</option>
+                                {% for size in item.size.all|dictsort:"created_at" %}
+                                    <option value="{{ size.id }}">{{ size.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                        <div>
+                            <p class="d-flex align-items-center justify-content-between mb-3">
+                                <button type="submit" class="btn btn-custom flex-grow-1 me-3">
+                                    Add to Cart
+                                </button>
+                                <a {% if user.is_authenticated %} href="javascript:void(0);" {% else %}
+                                                                  href="{% url 'login' %}" {% endif %}
+                                                                  data-item="{{ item.id }}"
+                                                                  class="updateWishlist text-custom"
+                                                                  aria-current="page">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="38"
+                                         height="38"
+                                         fill="currentColor"
+                                         class="bi bi-heart-fill {% if not item.id in wishlist_items %}d-none{% endif %}"
+                                         viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                              d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="38"
+                                         height="38"
+                                         fill="currentColor"
+                                         class="bi bi-heart {% if item.id in wishlist_items %}d-none{% endif %}"
+                                         viewBox="0 0 16 16">
+                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                    </svg>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <p class="d-flex align-items-center">
+                            <i class="bi bi-shield-check fs-3 me-2 text-secondary"></i> Only the original
+                        </p>
+                        <p class="d-flex align-items-center">
+                            <i class="bi bi-truck fs-3 me-2 text-secondary"></i> Fast delivery
+                        </p>
+                        <p class="d-flex align-items-center">
+                            <i class="bi bi-arrow-repeat fs-3 me-2 text-secondary"></i> Easy exchange and return
+                        </p>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-12 col-md-12">
+                        <h4>Product Description</h4>
+                        <p>{{ item.description }}</p>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <h4 class="mb-4">Maybe you will like them too</h4>
+                    {% for item in similar_items %}
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <div class="card border-white" style="max-height: 600px;">
+                                    <figure class="text-center">
+                                        <img style="max-height: 420px;" src="{{ item.image.url }}"
+                                             class="item-image p-3"
+                                             alt="{{ item.name }}">
+                                    </figure>
+                                    <div class="card-body">
+                                        <p class="d-flex justify-content-between align-items-center">
+                                            <span class="h6 card-subtitle text-muted">{{ item.category.name }}</span>
+                                            <a {% if user.is_authenticated %} href="javascript:void(0);" {% else %}
+                                                                              href="{% url 'login' %}" {% endif %}
+                                                                              data-item="{{ item.id }}"
+                                                                              class="updateWishlist text-custom"
+                                                                              aria-current="page">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="20"
+                                                     height="20"
+                                                     fill="currentColor"
+                                                     class="bi bi-heart-fill {% if not item.id in wishlist_items %}d-none{% endif %}"
+                                                     viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd"
+                                                          d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="20"
+                                                     height="20"
+                                                     fill="currentColor"
+                                                     class="bi bi-heart {% if item.id in wishlist_items %}d-none{% endif %}"
+                                                     viewBox="0 0 16 16">
+                                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                                </svg>
+                                            </a>
+                                        </p>
+                                        <h5 class="card-title"><a href="{% url 'item_detail' item.id %}"
+                                                                  class="text-dark text-decoration-none">{{ item.name }}</a>
+                                        </h5>
+                                        <p class="card-text small">
+                                            {% if item.items.exists %}
+                                                <p>Including:</p>
+                                                {% for sub in item.items.iterator %}
+                                                    <p>{{ sub.name }}</p>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </p>
+                                        <p class="h5">{{ item.actual_price }} UAH</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </section>
 {% endblock content %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('.updateWishlist').click(function () {
+                updateWishlist($(this), 'both')
+            })
+        });
+    </script>
+{% endblock scripts %}

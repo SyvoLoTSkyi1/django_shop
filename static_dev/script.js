@@ -66,12 +66,17 @@ function updateWishlist (element, context) {
             if (context === 'remove') {
                 if (data.created === false) {
                     card.addClass('d-none');
+
                 }
         } else {
                 if (data.created === true) {
+                    console.log('Adding to wishlist');
+                    console.log(heart, heartFill);
                     heart.addClass('d-none');
                     heartFill.removeClass('d-none');
                 } else {
+                    console.log('Removing from wishlist');
+                    console.log(heart, heartFill);
                     heart.removeClass('d-none');
                     heartFill.addClass('d-none');
                 }

@@ -3,16 +3,18 @@
 
 {% for field in form %}
     <label>{{ field.label }}</label>
-    {% if field|widget_type == 'select' %}
-        {{ field|add_class:'form-select' }}
-    {% else %}
-        {{ field|add_class:'form-control' }}
-    {% endif %}
-    {% if field.help_text %}
-        <div class="form-text">
-            {{ field.help_text }}
-        </div>
-    {% endif %}
+    <div class="mb-4">
+        {% if field|widget_type == 'select' %}
+            {{ field|add_class:'form-select' }}
+        {% else %}
+            {{ field|add_class:'form-control' }}
+        {% endif %}
+        {% if field.help_text %}
+            <div class="form-text">
+                {{ field.help_text }}
+            </div>
+        {% endif %}
+    </div>
 
     {% if field.errors %}
         <div class="mb-2">

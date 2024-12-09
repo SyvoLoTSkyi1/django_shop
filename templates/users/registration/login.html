@@ -2,15 +2,34 @@
 {% load widget_tweaks %}
 
 {% block content %}
-    <section class="login">
-        <div class="container" align="center">
-        <h1>Login</h1>
-        {{  request.user.is_authenticated }}
-
-            <form method="post">
-                 {% include 'parts_html/forms/simple_form.html' with form=form %}
-                <input type="submit" value="Login">
-            </form>
+<section class="login py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">Login</h2>
+                        <p class="text-center mb-4">
+                            {% if request.user.is_authenticated %}
+                                You are already logged in.
+                            {% else %}
+                                Please enter your credentials to log in.
+                            {% endif %}
+                        </p>
+                        <form method="post" class="mt-4">
+                            {% csrf_token %}
+                            {% include 'parts_html/forms/simple_form.html' with form=form %}
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-custom">Login</button>
+                            </div>
+                        </form>
+                        <div class="mt-4 text-center">
+                            <p>Don't have an account? <a href="{% url 'sign_up' %}" class="text-primary">Sign Up here</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 {% endblock content %}
