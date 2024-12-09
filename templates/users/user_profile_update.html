@@ -6,7 +6,6 @@
     <section class="user-profile p-5">
         <div class="container">
             <div class="row gy-5">
-                <!-- Card 1: Navigation -->
                 <div class="col-12 col-md-4">
                     <div class="card shadow-sm h-100">
                         <div class="card-body text-center">
@@ -21,11 +20,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- Card 2: Personal Information and Address -->
                 <div class="col-12 col-md-8">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <!-- Personal Information Form -->
                             <h5 class="card-title mb-4">Edit Personal Information</h5>
                             <form method="post">
                                 {% csrf_token %}
@@ -132,7 +129,7 @@
                                         </ul>
                                     </div>
                                 {% endif %}
-                                <button type="submit" class="btn btn-secondary rounded-0 mt-3">Save Changes</button>
+                                <button type="submit" class="btn btn-custom mt-3">Save Changes</button>
                             </form>
                         </div>
                     </div>

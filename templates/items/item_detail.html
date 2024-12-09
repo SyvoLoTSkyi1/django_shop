@@ -32,13 +32,13 @@
                         </form>
                         <div>
                             <p class="d-flex align-items-center justify-content-between mb-3">
-                                <button type="submit" class="btn btn-secondary flex-grow-1 me-3">
+                                <button type="submit" class="btn btn-custom flex-grow-1 me-3">
                                     Add to Cart
                                 </button>
                                 <a {% if user.is_authenticated %} href="javascript:void(0);" {% else %}
                                                                   href="{% url 'login' %}" {% endif %}
                                                                   data-item="{{ item.id }}"
-                                                                  class="updateWishlist text-secondary"
+                                                                  class="updateWishlist text-custom"
                                                                   aria-current="page">
 
                                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -97,7 +97,7 @@
                                             <a {% if user.is_authenticated %} href="javascript:void(0);" {% else %}
                                                                               href="{% url 'login' %}" {% endif %}
                                                                               data-item="{{ item.id }}"
-                                                                              class="updateWishlist text-secondary"
+                                                                              class="updateWishlist text-custom"
                                                                               aria-current="page">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      width="20"

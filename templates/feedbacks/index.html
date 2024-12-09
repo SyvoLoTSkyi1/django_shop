@@ -3,27 +3,37 @@
 {% block content %}
     <section class="feedbacks py-5">
         <div class="container mb-5">
-            <h4 class="text-left mb-4">Leave Your Feedback</h4>
-            <form method="post">
-                {% include 'parts_html/forms/simple_form.html' with form=form %}
-                <div class="text-center">
-                    <input class="btn btn-secondary mt-3 w-100" type="submit" value="Submit Feedback">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <h4 class="mb-4">Leave Your Feedback</h4>
+                    <div class="card p-4 border-1 shadow-sm">
+                        <div class="card-body">
+                            <form method="post">
+                                {% include 'parts_html/forms/simple_form.html' with form=form %}
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-custom mt-3 w-100">Submit Feedback</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="container mt-5">
-            <h4 class="text-left mb-4">Customer Feedbacks</h4>
+            <h4 class="mb-4 text-center">Customer Feedbacks</h4>
             <div class="row justify-content-center">
                 {% for feedback in feedbacks %}
-                    <div class="col-12 mb-4">
-                        <div class="card p-3 border-1 shadow-sm">
+                    <div class="col-md-8 mb-4">
+                        <div class="card p-4 border-1 shadow-sm">
                             <div class="card-body">
-                                <h5 class="card-title">User: {{ feedback.user.email }}</h5>
-                                <p class="card-text">
+                                <h5 class="card-title mb-3">
+                                    User: {{ feedback.user.email }}
+                                </h5>
+                                <p class="card-text mb-3">
                                     <small class="text-muted">Date: {{ feedback.created_at }}</small>
                                 </p>
-                                <p class="card-text">{{ feedback.text|linebreaksbr }}</p>
+                                <p class="card-text mb-3">{{ feedback.text|linebreaksbr }}</p>
                                 <div class="rating">
                                     <span class="text-warning">
                                         {% if feedback.rating >= 1 %}&#9733;{% else %}&#9734;{% endif %}
@@ -36,6 +46,10 @@
                             </div>
                         </div>
                     </div>
+                {% empty %}
+                <div class="col-md-8 text-center">
+                    <p class="text-muted">No feedbacks yet.</p>
+                </div>
                 {% endfor %}
             </div>
         </div>

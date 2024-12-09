@@ -12,7 +12,31 @@ ul.messages{
     z-index: 9;
 }
 
-.custom-bg-color {
-    background-color: #003333; /* Ваш кастомний колір фону */
+.bg-color-custom {
+    background-color: #004d4d;
+    color: white;
+}
 
+.btn-custom {
+    background-color: #004d4d;
+    color: white;
+}
+
+.btn-custom:hover {
+    background-color: #006666;
+    color: white;
+}
+
+.btn-custom-header {
+    background-color: white;
+    color: dimgrey;
+}
+
+.btn-custom-header:hover {
+    background-color: white;
+    color: dimgrey;
+}
+
+.text-custom {
+    color: #004d4d;
 }

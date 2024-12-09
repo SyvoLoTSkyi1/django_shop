@@ -12,7 +12,7 @@
                                     <input type="hidden" name="query" value="{{ query }}">
                                 {% endif %}
                                 {% include 'parts_html/forms/filter_form.html' with form=filter.form %}
-                                <button class="btn btn-secondary mt-4 w-75" type="submit">Filter</button>
+                                <button class="btn btn-custom mt-4 w-75" type="submit">Filter</button>
                             </form>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                                         <a {% if user.is_authenticated %} href="javascript:void(0);" {% else %}
                                                                           href="{% url 'login' %}" {% endif %}
                                                                           data-item="{{ item.id }}"
-                                                                          class="updateWishlist text-secondary"
+                                                                          class="updateWishlist text-custom"
                                                                           aria-current="page">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                  width="20"
