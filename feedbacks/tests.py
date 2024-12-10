@@ -12,7 +12,7 @@ def test_feedbacks_page(client, login_user):
     client, user = login_user
     response = client.get(url)
     assert response.status_code == 200
-    assert b'Please, leave your feedback' in response.content
+    assert b'Leave Your Feedback' in response.content
 
 
 def test_feedbacks_list(client, faker, login_user):

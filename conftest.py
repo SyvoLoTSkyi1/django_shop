@@ -75,7 +75,7 @@ def enable_db_access_for_all_tests(db):
 def celery_task_always_eager(celery_worker):
     return True
 
-
+@register
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Category

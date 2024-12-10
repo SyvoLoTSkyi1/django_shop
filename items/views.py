@@ -103,7 +103,7 @@ class ItemSearchView(FilterView):
     model = Item
     template_name = 'items/item_list.html'
     filterset_class = ItemFilter
-    paginate_by = 2
+    paginate_by = 6
 
     def get_queryset(self):
         query = self.request.GET.get('query')

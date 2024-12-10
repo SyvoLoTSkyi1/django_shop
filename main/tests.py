@@ -2,10 +2,24 @@ from django.core import mail
 from django.urls import reverse
 
 
-def test_main_page(client):
+def test_main_page(client, category_factory, item_factory, popular_item_factory):
     response = client.get(reverse('main'))
     assert response.status_code == 200
     assert any(template.name == 'main/index.html' for template in response.templates)
+
+    categories = category_factory.create_batch(3)
+    items = item_factory.create_batch(5)
+    popular_items = popular_item_factory.create_batch(5)
+    response = client.get(reverse('main'))
+    assert response.status_code == 200
+    assert 'categories' in response.context_data
+    assert len(response.context_data['categories']) == 3
+    assert 'items' in response.context_data
+    assert len(response.context_data['items']) == 3
+    assert 'popular_items' in response.context_data
+    assert len(response.context_data['popular_items']) == 3
+    assert 'wishlist_items' in response.context_data
+    assert not response.context_data['wishlist_items']
 
 
 # def test_contact_us_page(client, faker):

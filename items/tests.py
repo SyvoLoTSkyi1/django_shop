@@ -33,11 +33,11 @@ def test_items_page_pagination_and_filters(client, item_factory):
     assert len(response.context_data['object_list']) == 1
     assert response.context_data['is_paginated'] is False
 
-    items.extend(item_factory.create_batch(4))
+    items.extend(item_factory.create_batch(6))
     response = client.get(url)
     assert response.status_code == 200
-    assert len(response.context_data['items']) == 5
-    assert len(response.context_data['object_list']) == 2
+    assert len(response.context_data['items']) == 7
+    assert len(response.context_data['object_list']) == 6
     assert response.context_data['is_paginated'] is True
 
     assert 'filter' in response.context_data
@@ -168,7 +168,7 @@ def test_item_search(client, item_factory):
     items = item_factory.create_batch(3)
     response = client.get(reverse('item_search'))
     assert response.status_code == 200
-    assert len(response.context_data['object_list']) == 2
+    assert len(response.context_data['object_list']) == 3
     assert 'query_params' in response.context_data
     assert not response.context_data['query_params']
 
