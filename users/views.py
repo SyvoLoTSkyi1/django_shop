@@ -7,12 +7,15 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import FormView, RedirectView, DetailView, UpdateView, ListView
+from django.views.generic import FormView, RedirectView, \
+    DetailView, UpdateView, ListView
 
 from orders.models import Order
 from users.forms import CustomAuthenticationForm
-from users.model_forms import SignUpModelForm, ConfirmPhoneForm, UserProfileForm
-from users.tasks import send_confirmation_email, send_verification_sms
+from users.model_forms import SignUpModelForm, \
+    ConfirmPhoneForm, UserProfileForm
+from users.tasks import send_confirmation_email, \
+    send_verification_sms
 
 User = get_user_model()
 
@@ -23,7 +26,8 @@ class CustomLoginView(LoginView):
     success_url = reverse_lazy('main')
 
     def form_valid(self, form):
-        messages.success(self.request, f'Welcome back {form.get_user().email or form.get_user().phone}')
+        messages.success(self.request,
+                         f'Welcome back {form.get_user().email or form.get_user().phone}')  # noqa
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -38,7 +42,8 @@ class SignUpView(FormView):
     def form_valid(self, form):
         user = form.save()
         self.request.session['user_id'] = user.id
-        messages.success(self.request, f'User {user.email or user.phone} was created')
+        messages.success(self.request,
+                         f'User {user.email or user.phone} was created')  # noqa
 
         if user.email:
             self.success_url = reverse_lazy('activation_email')
@@ -52,7 +57,7 @@ class SignUpView(FormView):
         return super(SignUpView, self).form_invalid(form)
 
 
-class ConfirmEmailView(RedirectView):  # SignUpConfirmEmailView
+class ConfirmEmailView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         user = self.get_user(kwargs['uidb64'])
@@ -64,12 +69,13 @@ class ConfirmEmailView(RedirectView):  # SignUpConfirmEmailView
                 if not user.is_active:
                     user.is_active = True
                 user.is_email_valid = True
-                user.save(update_fields=('is_active', 'is_email_valid', ))
+                user.save(update_fields=('is_active', 'is_email_valid',))
                 messages.success(request, 'Your email successfully confirmed!')
             else:
                 messages.error(request, 'Confirmation error')
 
-        self.url = reverse_lazy('user_profile') if user.last_login else reverse_lazy('login')
+        self.url = reverse_lazy('user_profile') \
+            if user.last_login else reverse_lazy('login')
 
         return super().get(request, *args, **kwargs)
 
@@ -85,7 +91,7 @@ class ConfirmEmailView(RedirectView):  # SignUpConfirmEmailView
         return user
 
 
-class ConfirmPhoneView(FormView):  # SignUpConfirmPhoneView
+class ConfirmPhoneView(FormView):
     form_class = ConfirmPhoneForm
     template_name = 'users/registration/confirm_phone.html'
 
@@ -109,7 +115,8 @@ class ConfirmPhoneView(FormView):  # SignUpConfirmPhoneView
             self.request.user.is_anonymous else \
             self.request.user.id
         user = form.save(user_id)
-        messages.success(self.request, message='Your phone successfully confirmed!')
+        messages.success(self.request,
+                         message='Your phone successfully confirmed!')
 
         self.success_url = reverse_lazy('user_profile') if \
             user.last_login else \
@@ -149,7 +156,8 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def form_valid(self, form):
-        messages.success(self.request, 'Your profile was successfully updated!')
+        messages.success(self.request,
+                         'Your profile was successfully updated!')
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -210,17 +218,21 @@ class ConfirmPhoneEmailProfileView(LoginRequiredMixin, RedirectView):
     def confirm_email(self, user):
         if user.email and not user.is_email_valid:
             send_confirmation_email(user)
-            messages.success(self.request, "A confirmation was sent to your email.")
+            messages.success(self.request,
+                             "A confirmation was sent to your email.")
             return reverse_lazy('activation_email')
         else:
-            messages.error(self.request, "Your email is already verified or not provided.")
+            messages.error(self.request,
+                           "Your email is already verified or not provided.")
             return reverse_lazy('user_profile')
 
     def confirm_phone(self, user):
         if user.phone and not user.is_phone_valid:
             send_verification_sms(user, user.phone)
-            messages.success(self.request, "A confirmation code was sent to your phone.")
+            messages.success(self.request,
+                             "A confirmation code was sent to your phone.")
             return reverse_lazy('confirm_phone')
         else:
-            messages.error(self.request, "Your phone number is already verified or not provided.")
+            messages.error(self.request,
+                           "Your phone number is already verified or not provided.")  # noqa
             return reverse_lazy('user_profile')

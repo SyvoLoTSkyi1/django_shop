@@ -12,7 +12,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class UserManager(DjangoUserManager):
 
-    def _create_user(self, email=None, phone=None, password=None, **extra_fields):
+    def _create_user(self, email=None, phone=None,
+                     password=None, **extra_fields):
         """
         Create and save a user with the given username, email, and password.
         """
@@ -24,10 +25,12 @@ class UserManager(DjangoUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, email=None, phone=None, password=None, **extra_fields):
+    def create_user(self, email=None, phone=None,
+                    password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email=email, phone=phone, password=password, **extra_fields)
+        return self._create_user(email=email, phone=phone,
+                                 password=password, **extra_fields)
 
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -38,14 +41,17 @@ class UserManager(DjangoUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('SuperUser must have is_superuser=True.')
 
-        return self._create_user(email=email, password=password, **extra_fields)
+        return self._create_user(
+            email=email, password=password, **extra_fields
+        )
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('first name'), max_length=158, blank=True)
     last_name = models.CharField(_('last name'), max_length=158, blank=True)
     email = models.EmailField(_('email address'), unique=True,
-                              null=True, blank=True, validators=[EmailValidator])
+                              null=True, blank=True,
+                              validators=[EmailValidator])
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,

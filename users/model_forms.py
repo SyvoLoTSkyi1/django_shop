@@ -1,17 +1,11 @@
-import random
-
 from django import forms
-from django.conf import settings
+from django.conf import settings  # noqa
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UsernameField
-from django.contrib.auth.tokens import default_token_generator
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
 
-from shop.helpers import send_html_mail
-from users.tasks import send_sms, send_verification_sms, send_confirmation_email
+from users.tasks import send_verification_sms, send_confirmation_email
 
 User = get_user_model()
 
@@ -111,7 +105,6 @@ class SignUpModelForm(UserCreationForm):
             raise ValidationError('Password1 not equal password2')
         return self.cleaned_data
 
-
     def save(self, commit=True):
         user = super().save(commit=commit)
 
@@ -125,7 +118,7 @@ class SignUpModelForm(UserCreationForm):
         return user
 
 
-class ConfirmPhoneForm(forms.Form):  # SignUpConfirmPhoneForm
+class ConfirmPhoneForm(forms.Form):
     code = forms.IntegerField(min_value=10000, max_value=99999)
 
     def __init__(self, *args, **kwargs):
@@ -168,6 +161,7 @@ class UserProfileForm(forms.ModelForm):
                 self.fields[field].disabled = True
 
         if require_fields:
-            required_fields = ['first_name', 'last_name', 'country', 'city', 'address']
+            required_fields = ['first_name', 'last_name',
+                               'country', 'city', 'address']
             for field in required_fields:
                 self.fields[field].required = True

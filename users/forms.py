@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm, UsernameField
 from django.core.exceptions import ValidationError
 
@@ -36,16 +36,22 @@ class CustomAuthenticationForm(AuthenticationForm):
 # class UserUpdateForm(forms.ModelForm):
 #     class Meta:
 #         model = User
-#         fields = ['first_name', 'last_name', 'email', 'phone']  # Додайте поля, які потрібно редагувати
+#         fields = ['first_name', 'last_name', 'email', 'phone']
 #
 #     def clean_email(self):
 #         email = self.cleaned_data.get('email')
-#         if User.objects.exclude(pk=self.instance.pk).filter(email=email).exists():
-#             raise forms.ValidationError('Цей email вже використовується іншим користувачем.')
+#         if User.objects.exclude(pk=self.instance.pk) \
+#               .filter(email=email).exists():
+#             raise forms.ValidationError(
+#                       'Цей email вже використовується іншим користувачем.'
+#                     )
 #         return email
 #
 #     def clean_phone(self):
 #         phone = self.cleaned_data.get('phone')
-#         if User.objects.exclude(pk=self.instance.pk).filter(phone=phone).exists():
-#             raise forms.ValidationError('Цей phone вже використовується іншим користувачем.')
+#         if User.objects.exclude(pk=self.instance.pk) \
+#               .filter(phone=phone).exists():
+#             raise forms.ValidationError(
+#                             'This phone is already in use'
+#                          )
 #         return phone

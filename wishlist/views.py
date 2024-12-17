@@ -18,8 +18,6 @@ class WishlistView(LoginRequiredMixin, ListView):
         return WishlistItem.objects.filter(user=self.request.user)
 
 
-
-
 # class UpdateWishlistView(LoginRequiredMixin, DetailView):
 #     model = Item
 #     template_name_suffix = '_wishlist'

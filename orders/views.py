@@ -47,19 +47,21 @@ class UpdateCartView(GetCurrentOrderMixin, RedirectView):
                 form.save(kwargs.get('action'))
                 if kwargs['action'] == 'remove':
                     messages.warning(request,
-                                    message='Item was deleted from your cart!')
+                                     message='Item was deleted from your cart!')  # noqa
 
                 elif kwargs['action'] == 'clear':
                     messages.success(request, message='Your cart was cleared!')
                 elif kwargs['action'] == 'pay':
                     messages.success(request, message='Success')
                 else:
-                    messages.success(request, message='Item was add to your cart!')
+                    messages.success(request,
+                                     message='Item was add to your cart!')
             except ValidationError as e:
                 messages.error(request, e.message)
 
         else:
-            error_message = ' '.join([str(error) for error in form.non_field_errors()])
+            error_message = ' '.join([str(error)
+                                      for error in form.non_field_errors()])
             messages.error(request, error_message)
         return self.get(request, *args, **kwargs)
 
@@ -153,14 +155,18 @@ class ConfirmCartView(UpdateView):
         Check the form and save it.
         """
         form.save()
-        messages.success(self.request, 'Your details have been updated successfully.')
+        messages.success(self.request,
+                         'Your details have been updated successfully.'
+                         )
         return super().form_valid(form)
 
     def form_invalid(self, form):
         """
         If form is invalid, show message with errors
         """
-        messages.error(self.request, 'Error updating your details. Please check the form.')
+        messages.error(self.request,
+                       'Error updating your details. Please check the form.'
+                       )
         return super().form_invalid(form)
 
 

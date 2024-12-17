@@ -66,11 +66,11 @@ class Item(PKMixin):
     @classmethod
     def get_items(cls):
         items = cache.get(cls._items_cache_key)
-        print('BEFORE ', items)
+        # print('BEFORE ', items)
         if not items:
             items = Item.objects.all()
             cache.set(cls._items_cache_key, items)
-            print('AFTER ', items)
+            # print('AFTER ', items)
         return items
 
     @hook(AFTER_CREATE)

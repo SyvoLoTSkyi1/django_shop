@@ -28,8 +28,9 @@ class ItemsView(FilterView):
         context = super().get_context_data(**kwargs)
         context.update({'items': self.get_queryset()})
         if self.request.user.is_authenticated:
-            wishlist_items = WishlistItem.objects.filter(user=self.request.user).\
-                values_list('item_id', flat=True)
+            wishlist_items = WishlistItem.objects \
+                .filter(user=self.request.user) \
+                .values_list('item_id', flat=True)
         else:
             wishlist_items = []
         context.update({
@@ -51,16 +52,18 @@ class ItemDetail(DetailView):
         context = super().get_context_data(**kwargs)
         item = self.get_object()
 
-        similar_items = Item.objects.filter(category=item.category).exclude(id=item.id)[:3]
+        similar_items = Item.objects.filter(
+            category=item.category).exclude(id=item.id)[:3]
         if self.request.user.is_authenticated:
-            wishlist_items = WishlistItem.objects.filter(user=self.request.user).\
-                values_list('item_id', flat=True)
+            wishlist_items = WishlistItem.objects.filter(
+                user=self.request.user
+                ).values_list('item_id', flat=True)
         else:
             wishlist_items = []
         context.update({
             'wishlist_items': wishlist_items,
             'similar_items': similar_items
-            })
+        })
 
         return context
 
@@ -129,14 +132,6 @@ class PopularItemsView(ItemsView):
     template_name = 'items/popular_items.html'
     filterset_class = PopularItemFilter
     paginate_by = 6
-    
+
     def get_queryset(self):
         return PopularItem.objects.all()
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     return context
-    #
-    # def get_query_params(self):
-    #     context = super().get_query_params()
-    #     return context

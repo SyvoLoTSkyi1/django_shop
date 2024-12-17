@@ -75,6 +75,7 @@ def enable_db_access_for_all_tests(db):
 def celery_task_always_eager(celery_worker):
     return True
 
+
 @register
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -104,7 +105,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.Sequence(lambda x: fake.email())
     first_name = factory.Sequence(lambda x: fake.first_name())
     last_name = factory.Sequence(lambda x: fake.last_name())
-    phone = factory.LazyFunction(lambda: f"+1{fake.random_number(digits=10, fix_len=True)}")
+    phone = factory.LazyFunction(lambda: f"+1{fake.random_number(digits=10, fix_len=True)}")  # noqa
     is_phone_valid = False
     is_email_valid = False
     is_staff = False
@@ -131,7 +132,7 @@ class ItemFactory(factory.django.DjangoModelFactory):
         left_digits=DECIMAL_PLACES,
         right_digits=DECIMAL_PLACES
     ))
-    currency = factory.LazyFunction(lambda: fake.random_element(Currency.choices)[0])
+    currency = factory.LazyFunction(lambda: fake.random_element(Currency.choices)[0])  # noqa
     sku = factory.Sequence(lambda x: fake.word())
     category = factory.SubFactory(CategoryFactory)
 
@@ -181,7 +182,8 @@ class DiscountFactory(factory.django.DjangoModelFactory):
     ))
     code = factory.Faker('lexify', text='??????')
     is_active = True
-    discount_type = factory.LazyFunction(lambda: DiscountTypes.VALUE if factory.Faker('boolean') else DiscountTypes.PERCENT)
+    discount_type = factory.LazyFunction(
+        lambda: DiscountTypes.VALUE if factory.Faker('boolean') else DiscountTypes.PERCENT)  # noqa
 
 
 @register

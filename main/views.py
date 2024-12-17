@@ -17,7 +17,8 @@ class MainView(TemplateView):
         items = Item.objects.all()[:3]
         popular_items = PopularItem.objects.all()[:3]
         if self.request.user.is_authenticated:
-            wishlist_items = WishlistItem.objects.filter(user=self.request.user).\
+            wishlist_items = WishlistItem.objects \
+                .filter(user=self.request.user). \
                 values_list('item_id', flat=True)
         else:
             wishlist_items = []
@@ -40,6 +41,6 @@ class ContactView(FormView):
 
     def form_valid(self, form):
         send_contact_form(form.cleaned_data['email'],
-                                form.cleaned_data['text'])
+                          form.cleaned_data['text'])
         messages.success(self.request, "Email has been sent.")
         return super().form_valid(form)

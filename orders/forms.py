@@ -44,7 +44,7 @@ from orders.models import Discount, OrderItemRelation
 #
 #             if size and size not in item.size.all():
 #                 raise ValidationError(
-#                                       'Selected size is not available for this item.')
+#                       'Selected size is not available for this item.')
 #
 #         return self.cleaned_data
 #
@@ -63,22 +63,32 @@ from orders.models import Discount, OrderItemRelation
 #             print('In remove')
 #             item = Item.objects.get(id=self.cleaned_data['item'])
 #             size = self.cleaned_data['size']
-#             self.instance.items.through.objects.filter(order=self.instance, item=item, size=size).delete()
+#             self.instance.items.through.objects /
+#             .filter(order=self.instance, item=item, size=size) /
+#             .delete()
 #             return
 #
 #         item = Item.objects.get(id=self.cleaned_data['item'])
 #         size = self.cleaned_data['size']
 #         quantity = 1
 #
-#         existing_relation = OrderItemRelation.objects.filter(order=self.instance, item=item, size=size).first()
+#         existing_relation = OrderItemRelation.objects /
+#         .filter(order=self.instance, item=item, size=size) /
+#         .first()
 #
 #         if existing_relation:
-#             raise ValidationError('This item with the selected size is already in your cart.')
+#             raise ValidationError(
+#             'This item with the selected size is already in your cart.'
+#             )
 #         else:
 #             try:
-#                 OrderItemRelation.objects.create(order=self.instance, item=item, size=size, quantity=quantity)
+#                 OrderItemRelation.objects /
+#                 .create(order=self.instance, item=item,
+#                 size=size, quantity=quantity)
 #             except IntegrityError:
-#                 raise ValidationError('There was an error adding the item to your cart. Please try again.')
+#                 raise ValidationError(
+#                 'There was an error adding the item to your cart. Please try again.'  # noqa
+#                 )
 
 class UpdateCartOrderForm(forms.Form):
     item = forms.UUIDField(required=False)
@@ -107,7 +117,9 @@ class UpdateCartOrderForm(forms.Form):
                 raise ValidationError('Wrong item id.')
 
             if size and size not in item.size.all():
-                raise ValidationError('Selected size is not available for this item.')
+                raise ValidationError(
+                    'Selected size is not available for this item.'
+                )
 
         return self.cleaned_data
 
@@ -126,17 +138,24 @@ class UpdateCartOrderForm(forms.Form):
         item = Item.objects.get(id=self.cleaned_data['item'])
         size = self.cleaned_data['size']
 
-        existing_relation = OrderItemRelation.objects.filter(order=self.instance, item=item, size=size).first()
+        existing_relation = OrderItemRelation.objects \
+            .filter(order=self.instance, item=item, size=size) \
+            .first()
 
         if existing_relation and action == 'add':
-            raise ValidationError('This item with the selected size is already in your cart.')
+            raise ValidationError(
+                'This item with the selected size is already in your cart.'  # noqa
+            )
         else:
             try:
                 existing_relation.delete() \
                     if action == 'remove' \
-                    else OrderItemRelation.objects.create(order=self.instance, item=item, size=size)
+                    else OrderItemRelation.objects \
+                    .create(order=self.instance, item=item, size=size)
             except IntegrityError:
-                raise ValidationError('There was an error adding the item to your cart. Please try again.')
+                raise ValidationError(
+                    'There was an error adding the item to your cart. Please try again.'  # noqa
+                )
 
 
 # class RecalculateCartForm(forms.Form):
@@ -184,12 +203,16 @@ class RecalculateCartForm(forms.Form):
                         .filter(order=self.instance,
                                 item_id=self.cleaned_data[f'item_{index}'],
                                 size_id=self.cleaned_data[f'size_{index}']) \
-                        .update(quantity=self.cleaned_data[f'quantity_{index}'])
+                        .update(
+                            quantity=self.cleaned_data[f'quantity_{index}']
+                        )
                 else:
                     self.instance.items.through.objects \
                         .filter(order=self.instance,
                                 item_id=self.cleaned_data[f'item_{index}']) \
-                        .update(quantity=self.cleaned_data[f'quantity_{index}'])
+                        .update(
+                            quantity=self.cleaned_data[f'quantity_{index}']
+                        )
 
         return self.instance
 

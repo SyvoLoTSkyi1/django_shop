@@ -14,7 +14,7 @@ urlpatterns = [
     path('activation/email/',
          TemplateView.as_view(
              template_name='users/registration/confirm_email.html'),
-             name='activation_email'),
+         name='activation_email'),
     path('email/<uidb64>/<token>/confirm/',
          ConfirmEmailView.as_view(), name='confirm_email'),
     path('phone/confirm/',

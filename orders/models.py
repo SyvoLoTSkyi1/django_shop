@@ -2,7 +2,7 @@ import decimal
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import F, When, Case, Sum
+from django.db.models import F
 from django_lifecycle import LifecycleModelMixin, \
     hook, AFTER_UPDATE, BEFORE_UPDATE
 
