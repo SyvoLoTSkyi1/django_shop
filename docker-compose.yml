@@ -14,6 +14,9 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
+      - celery
+      - celery-beat
+      - memcached
 
   db:
     image: postgres:15
@@ -28,6 +31,33 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6.2
+    restart: always
+
+  celery:
+    build: .
+    command: celery -A shop worker -l info
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    restart: always
+
+  celery-beat:
+    build: .
+    command: celery -A shop beat -l info
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    restart: always
+
+  memcached:
+    image: memcached:1.6
+    restart: always
+
 
 volumes:
   postgres_data:

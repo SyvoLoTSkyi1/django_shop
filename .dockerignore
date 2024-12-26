@@ -1,27 +1,27 @@
-.vscode
-.idea
+.vscode/
+.idea/
 *.pyc
 *.pyo
 *.pyd
-__pycache__
-.git
+__pycache__/
+.git/
 
-venv
-env
-ENV
-env.bak
-venv.bak
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
 .coverage
 *.cover
 *.log
-htmlcov
-.pytest_cache
+htmlcov/
+.pytest_cache/
 
-static
-images
+static/
+images/
 
-django_cache
+django_cache/
 
 db.sqlite3
 db.sqlite3_old
