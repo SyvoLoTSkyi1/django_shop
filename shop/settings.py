@@ -106,9 +106,17 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('POSTGRES_DB', default='POSTGRES_DB'),
+        'USER': env('POSTGRES_USER', default='POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD', default='POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST', default='127.0.0.1'),
+        'PORT': env('POSTGRES_PORT', default=5432),
     }
 }
 
@@ -182,10 +190,10 @@ CELERY_BEAT_SCHEDULE = {
 
 CACHES = {
     'default': {
-        # 'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        # 'LOCATION': env('MEMCACHE_LOCATION', default='MEMCACHE_LOCATION'),
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': 'django_cache',
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': env('MEMCACHE_LOCATION', default='MEMCACHE_LOCATION'),
+        # 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        # 'LOCATION': 'django_cache',
     }
 }
 
@@ -208,7 +216,7 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=True)
 
-ADMINS = [('Mykola', env('ADMIN_EMAIL', default='ADMIN_EMAIL')), ]
+ADMINS = [('Admin', env('ADMIN_EMAIL', default='ADMIN_EMAIL')), ]
 MANAGERS = ADMINS
 EMAIL_SUBJECT_PREFIX = 'Shop - '
 SERVER_EMAIL = EMAIL_HOST_USER

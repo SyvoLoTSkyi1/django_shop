@@ -217,7 +217,7 @@ class ConfirmPhoneEmailProfileView(LoginRequiredMixin, RedirectView):
 
     def confirm_email(self, user):
         if user.email and not user.is_email_valid:
-            send_confirmation_email(user)
+            send_confirmation_email.delay(user)
             messages.success(self.request,
                              "A confirmation was sent to your email.")
             return reverse_lazy('activation_email')
@@ -228,7 +228,7 @@ class ConfirmPhoneEmailProfileView(LoginRequiredMixin, RedirectView):
 
     def confirm_phone(self, user):
         if user.phone and not user.is_phone_valid:
-            send_verification_sms(user, user.phone)
+            send_verification_sms.delay(user, user.phone)
             messages.success(self.request,
                              "A confirmation code was sent to your phone.")
             return reverse_lazy('confirm_phone')
