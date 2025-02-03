@@ -56,7 +56,8 @@ class ImportForm(forms.Form):
                         price=row['price'],
                         sku=row['sku'],
                         category=Category.objects.get_or_create(
-                            name=row['name'])[0]
+                            name=row['category'])[0],
+                        image=row['image']
                     )
                 )
             except KeyError as error:
