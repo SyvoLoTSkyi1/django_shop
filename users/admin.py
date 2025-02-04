@@ -8,11 +8,13 @@ User = get_user_model()
 
 @admin.register(User)
 class UserAdmin(AuthUserAdmin):
-    permissions_fieldsets = {
-        'fields': (('is_active', 'is_staff', 'is_superuser'), 'groups',
-                   'user_permissions'),
-        'classes': ('collapse',),
-    }
+    permissions_fieldsets = (
+        (None, {
+            'fields': (('is_active', 'is_staff', 'is_superuser'), 'groups',
+                       'user_permissions'),
+            'classes': ('collapse',),
+        }),
+    )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),

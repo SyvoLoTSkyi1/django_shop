@@ -41,6 +41,6 @@ class ContactView(FormView):
 
     def form_valid(self, form):
         send_contact_form.delay(form.cleaned_data['email'],
-                          form.cleaned_data['text'])
+                                form.cleaned_data['text'])
         messages.success(self.request, "Email has been sent.")
         return super().form_valid(form)

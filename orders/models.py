@@ -92,27 +92,6 @@ class Order(LifecycleModelMixin, PKMixin):
 
         return total_amount.quantize(decimal.Decimal('.01'))
 
-    # def get_total_amount(self):
-    #     return self.items.through.objects.annotate(
-    #         full_price=F('item__price') * F('quantity')
-    #     ).aggregate(
-    #         total_amount=Case(
-    #             When(
-    #                 order__discount__discount_type=DiscountTypes.VALUE,
-    #                 then=Sum('full_price') - F('order__discount__amount')
-    #             ),
-    #             When(
-    #                 order__discount__discount_type=DiscountTypes.PERCENT,
-    #                 then=Sum('full_price') - (
-    #                         Sum('full_price'
-    #                             ) * F('order__discount__amount') / 100
-    #                 )
-    #             ),
-    #             default=Sum('full_price'),
-    #             output_field=models.DecimalField()
-    #         )
-    #     ).get('total_amount') or 0
-
     @hook(AFTER_UPDATE)
     def order_after_update(self):
         if self.items.exists():

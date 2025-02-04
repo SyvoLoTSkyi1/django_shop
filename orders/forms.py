@@ -6,90 +6,6 @@ from items.models import Item, Size
 from orders.models import Discount, OrderItemRelation
 
 
-# class UpdateCartOrderForm(forms.Form):
-#     item = forms.UUIDField(required=False)
-#     size = forms.ModelChoiceField(
-#                                   queryset=Size.objects.order_by('created_at'),
-#                                   required=False,
-#                                   empty_label="Select a size")
-#
-#     def __init__(self, *args, **kwargs):
-#         instance = kwargs.pop('instance')
-#         self.action = kwargs.pop('action')
-#         super().__init__(*args, **kwargs)
-#         self.instance = instance
-#         print(f'instance: {instance}')
-#         print(f'instance.items: {instance.items}')
-#         if instance:
-#             print(f'instance.items (all): {instance.items.all()}')
-#         else:
-#             print('instance is None')
-#
-#     def clean(self):
-#         cleaned_data = super().clean()
-#         item_id = cleaned_data.get('item')
-#         size = cleaned_data.get('size')
-#
-#         if self.action == 'add':
-#             if not item_id:
-#                 raise ValidationError('Item is required for this action.')
-#             if not size:
-#                 raise ValidationError('Size is required for this action.')
-#
-#         if item_id:
-#             try:
-#                 item = Item.objects.get(id=item_id)
-#             except Item.DoesNotExist:
-#                 raise ValidationError('Wrong item id.')
-#
-#             if size and size not in item.size.all():
-#                 raise ValidationError(
-#                       'Selected size is not available for this item.')
-#
-#         return self.cleaned_data
-#
-#     def save(self, action):
-#         if self.instance.discount and action in ('clear', 'remove', 'add'):
-#             self.instance.reset_discount()
-#
-#         if action == 'clear':
-#             print("In clear")
-#             self.instance.items.clear()
-#             return
-#         elif action == 'pay':
-#             self.instance.pay()
-#             return
-#         elif action == 'remove':
-#             print('In remove')
-#             item = Item.objects.get(id=self.cleaned_data['item'])
-#             size = self.cleaned_data['size']
-#             self.instance.items.through.objects /
-#             .filter(order=self.instance, item=item, size=size) /
-#             .delete()
-#             return
-#
-#         item = Item.objects.get(id=self.cleaned_data['item'])
-#         size = self.cleaned_data['size']
-#         quantity = 1
-#
-#         existing_relation = OrderItemRelation.objects /
-#         .filter(order=self.instance, item=item, size=size) /
-#         .first()
-#
-#         if existing_relation:
-#             raise ValidationError(
-#             'This item with the selected size is already in your cart.'
-#             )
-#         else:
-#             try:
-#                 OrderItemRelation.objects /
-#                 .create(order=self.instance, item=item,
-#                 size=size, quantity=quantity)
-#             except IntegrityError:
-#                 raise ValidationError(
-#                 'There was an error adding the item to your cart. Please try again.'  # noqa
-#                 )
-
 class UpdateCartOrderForm(forms.Form):
     item = forms.UUIDField(required=False)
     size = forms.ModelChoiceField(queryset=Size.objects.all(), required=False)
@@ -156,29 +72,6 @@ class UpdateCartOrderForm(forms.Form):
                 raise ValidationError(
                     'There was an error adding the item to your cart. Please try again.'  # noqa
                 )
-
-
-# class RecalculateCartForm(forms.Form):
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, *kwargs)
-#         self.instance = kwargs['instance']
-#         self.fields = {k: forms.IntegerField() if k.startswith(
-#             'quantity') else forms.UUIDField() for k in self.data.keys() if
-#                        k.startswith(('quantity', 'item'))}
-#
-#     def save(self):
-#         if self.instance.discount:
-#             self.instance.reset_discount()
-#
-#         for k in self.cleaned_data.keys():
-#             if k.startswith('item_'):
-#                 index = k.split('_')[-1]
-#                 self.instance.items.through.objects \
-#                     .filter(order=self.instance,
-#                             item_id=self.cleaned_data[f'item_{index}']) \
-#                     .update(quantity=self.cleaned_data[f'quantity_{index}'])
-#         return self.instance
 
 
 class RecalculateCartForm(forms.Form):

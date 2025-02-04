@@ -106,10 +106,6 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': env('POSTGRES_DB', default='POSTGRES_DB'),
@@ -195,8 +191,6 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
         'LOCATION': env('MEMCACHE_LOCATION', default='MEMCACHE_LOCATION'),
-        # 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        # 'LOCATION': 'django_cache',
     }
 }
 

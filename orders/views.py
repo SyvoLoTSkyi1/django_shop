@@ -28,9 +28,6 @@ class CartView(GetCurrentOrderMixin, TemplateView):
         return context
 
     def get_queryset(self):
-        # return self.get_object().items.through.objects \
-        #     .select_related('item')\
-        #     .annotate(full_price=F('item__price') * F('quantity'))
         return self.get_object().get_items_through()
 
 
