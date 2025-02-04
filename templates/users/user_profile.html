@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    User Profile
+{% endblock %}
+
+{% block content %}
+    <section class="user-profile p-5">
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-12 col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-4">Personal Profile</h5>
+                            <div class="d-flex flex-column gap-3">
+                                <a href="{% url 'user_orders' %}" class="btn btn-light rounded-0">My Orders</a>
+                                <a href="{% url 'contacts' %}" class="btn btn-light rounded-0">Contact Us</a>
+                                <a href="{% url 'wishlist' %}" class="btn btn-light rounded-0">Wishlist</a>
+                                <hr>
+                                <a href="{% url 'logout' %}" class="btn btn-light rounded-0">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">Personal Information</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <span class="text-muted">First Name:</span>
+                                        <div>{{ user_profile.first_name }}</div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span class="text-muted">Last Name:</span>
+                                        <div> {{ user_profile.last_name }}</div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span class="text-muted">Date Joined:</span>
+                                        <div>{{ user.date_joined }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <span class="text-muted">Email:</span>
+                                        <div>
+                                            {% if user_profile.email %}
+                                                {{ user_profile.email }} -
+                                                {% if user_profile.is_email_valid %}
+                                                    <span class="text-success"><i class="bi bi-check-lg"></i></span>
+                                                {% else %}
+                                                    <span class="text-danger"><i class="bi bi-x-lg"></i></span>
+                                                    <a href="{% url 'confirm_phone_email_profile' 'email' %}"
+                                                       class="text-dark text-decoration-none"> - confirm your email</a>
+                                                {% endif %}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span class="text-muted">Phone:</span>
+                                        <div>
+                                            {% if user_profile.phone %}
+                                                {{ user_profile.phone }} -
+                                                {% if user_profile.is_phone_valid %}
+                                                    <span class="text-success"><i class="bi bi-check-lg"></i></span>
+                                                {% else %}
+                                                    <span class="text-danger"><i class="bi bi-x-lg"></i></span>
+                                                    <a href="{% url 'confirm_phone_email_profile' 'phone' %}"
+                                                       class="text-dark text-decoration-none"> - confirm your phone</a>
+                                                {% endif %}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <h5 class="card-title mb-3">Address Information</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <span class="text-muted">Country:</span>
+                                        <div>{{ user_profile.country }}</div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span class="text-muted">City:</span>
+                                        <div>{{ user_profile.city }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-4">
+                                        <span class="text-muted">Address:</span>
+                                        <div>{{ user_profile.address }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{% url 'user_profile_update' %}" class="btn btn-custom mt-4">Update
+                                Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

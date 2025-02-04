@@ -3,3 +3,7 @@ exclude =
     .git,
     __pycache__,
     venv/
+    *migrations/*.*
+    *migrations/*.*
+    *tests*.py
+    settings_tests.py

@@ -1,0 +1,7 @@
+{% load widget_tweaks %}
+{% csrf_token %}
+
+{% for field in form %}
+    <label>{{ field.label }}</label>
+    {{ field|add_class:'form-select' }}
+{% endfor %}

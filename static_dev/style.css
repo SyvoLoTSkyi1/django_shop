@@ -1,0 +1,42 @@
+.logo{
+    width: 48px;
+}
+.item-image{
+    max-height: 150px;
+}
+ul.messages{
+    display: inline-block;
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    z-index: 9;
+}
+
+.bg-color-custom {
+    background-color: #004d4d;
+    color: white;
+}
+
+.btn-custom {
+    background-color: #004d4d;
+    color: white;
+}
+
+.btn-custom:hover {
+    background-color: #006666;
+    color: white;
+}
+
+.btn-custom-header {
+    background-color: white;
+    color: dimgrey;
+}
+
+.btn-custom-header:hover {
+    background-color: white;
+    color: dimgrey;
+}
+
+.text-custom {
+    color: #004d4d;
+}

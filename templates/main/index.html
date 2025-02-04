@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="main">
+
+        <div class="bg-dark text-white text-center py-5" style="height: 50vh; display: flex; align-items: center;">
+            <div class="container">
+                <h1 class="display-4">Super Shop</h1>
+                <p class="lead">Your ability to shop in style with Super Shop</p>
+            </div>
+        </div>
+
+        <div class="bg-white py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 p-5">
+                        <h1>Main</h1>
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+                            been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                            galley of type and scrambled it to make a type specimen book. It has survived not only five
+                            centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                            It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
+                            passages, and more recently with desktop publishing software like Aldus PageMaker including
+                            versions of Lorem Ipsum.</p>
+                        <p>It is a long established fact that a reader will be distracted by the readable content of a
+                            page when looking at its layout. The point of using Lorem Ipsum is that it has a
+                            more-or-less normal distribution of letters, as opposed to using 'Content here, content
+                            here', making it look like readable English. Many desktop publishing packages and web page
+                            editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will
+                            uncover many web sites still in their infancy.</p>
+                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have
+                            suffered alteration in some form, by injected humour, or randomised words which don't look
+                            even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be
+                            sure there isn't anything embarrassing hidden in the middle of text.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class=" py-5">
+            <div class="container">
+                <div class="row">
+                    <h3 class="text-left mb-4">Categories</h3>
+                    {% for category in categories %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card border-white">
+                                <figure class="text-center">
+                                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="img-fluid"
+                                         style="max-height: 100px;">
+                                </figure>
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">{{ category.name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white py-5">
+            <div class="container-fluid">
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <img src="{% static 'images/adidas-samba-og-007-21225836-main.jpg' %}"
+                         alt="Image 1"
+                         class="img-fluid"
+                         style="flex: 0 0 48%; max-width: 48%;">
+
+                    <img src="{% static 'images/1024px-Nike_air_Force_1_white_on_white.jpg' %}"
+                         alt="Image 3"
+                         class="img-fluid"
+                         style="flex: 0 0 48%; max-width: 48%;">
+                </div>
+            </div>
+        </div>
+
+        <div class=" py-5">
+            <div class="container">
+                <div class="row">
+                    <h3 class="text-left mb-4">Popular Items</h3>
+                    {% for popular_item in popular_items %}
+                        <div class="col {% if popular_item.item.items.exists %}col-lg-7{% else %}col-lg-4{% endif %}">
+                            <div class="mb-3">
+                                <div class="card border-white" style="max-height: 600px;">
+                                    <figure class="text-center">
+                                        <img style="max-height: 420px;" src="{{ popular_item.item.image.url }}"
+                                             class="item-image p-3" alt="{{ popular_item.item.name }}">
+                                    </figure>
+                                    <div class="card-body">
+                                        <p class="d-flex justify-content-between align-items-center">
+                                            <span class="h6 card-subtitle text-muted">{{ popular_item.item.category.name }}</span>
+                                            <a {% if user.is_authenticated %} href="javascript:void(0);" {% else %}
+                                                                              href="{% url 'login' %}" {% endif %}
+                                                                              data-item="{{ popular_item.item.id }}"
+                                                                              class="updateWishlist text-custom"
+                                                                              aria-current="page">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="20"
+                                                     height="20"
+                                                     fill="currentColor"
+                                                     class="bi bi-heart-fill {% if not popular_item.item.id in wishlist_items %}d-none{% endif %}"
+                                                     viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd"
+                                                          d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="20"
+                                                     height="20"
+                                                     fill="currentColor"
+                                                     class="bi bi-heart {% if popular_item.item.id in wishlist_items %}d-none{% endif %}"
+                                                     viewBox="0 0 16 16">
+                                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                                </svg>
+                                            </a>
+                                        </p>
+                                        <h5 class="card-title"><a href="{% url 'item_detail' popular_item.item.id %}"
+                                                                  class="text-dark text-decoration-none">{{ popular_item.item.name }}</a>
+                                        </h5>
+                                        <p class="card-text small">
+                                            {% if popular_item.item.items.exists %}
+                                                <p>Including:</p>
+                                                {% for sub in popular_item.item.items.iterator %}
+                                                    <p>{{ sub.name }}</p>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </p>
+                                        <p class="h5">{{ popular_item.item.actual_price }} UAH</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white py-5">
+            <div class="container-fluid">
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <img src="{% static 'images/air_max.jpg' %}"
+                         alt="Image 1"
+                         class="img-fluid"
+                         style="flex: 0 0 48%; max-width: 48%;">
+
+                    <img src="{% static 'images/air_max_2.jpg' %}"
+                         alt="Image 3"
+                         class="img-fluid"
+                         style="flex: 0 0 48%; max-width: 48%;">
+                </div>
+            </div>
+        </div>
+
+        <div class=" py-5">
+            <div class="container">
+                <div class="row">
+                    <h3 class="text-left mb-4">Our Items</h3>
+                    {% for item in items %}
+                        <div class="col {% if item.items.exists %}col-lg-7{% else %}col-lg-4{% endif %}">
+                            <div class="mb-3">
+                                <div class="card border-white" style="max-height: 600px;">
+                                    <figure class="text-center">
+                                        <img style="max-height: 420px;" src="{{ item.image.url }}"
+                                             class="item-image p-3" alt="{{ item.name }}">
+                                    </figure>
+                                    <div class="card-body">
+                                        <p class="d-flex justify-content-between align-items-center">
+                                            <span class="h6 card-subtitle text-muted">{{ item.category.name }}</span>
+                                            <a {% if user.is_authenticated %} href="javascript:void(0);" {% else %}
+                                                                              href="{% url 'login' %}" {% endif %}
+                                                                              data-item="{{ item.id }}"
+                                                                              class="updateWishlist text-custom"
+                                                                              aria-current="page">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="20"
+                                                     height="20"
+                                                     fill="currentColor"
+                                                     class="bi bi-heart-fill {% if not item.id in wishlist_items %}d-none{% endif %}"
+                                                     viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd"
+                                                          d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="20"
+                                                     height="20"
+                                                     fill="currentColor"
+                                                     class="bi bi-heart {% if item.id in wishlist_items %}d-none{% endif %}"
+                                                     viewBox="0 0 16 16">
+                                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                                </svg>
+                                            </a>
+                                        </p>
+                                        <h5 class="card-title"><a href="{% url 'item_detail' item.id %}"
+                                                                  class="text-dark text-decoration-none">{{ item.name }}</a>
+                                        </h5>
+                                        <p class="card-text small">
+                                            {% if item.items.exists %}
+                                                <p>Including:</p>
+                                                {% for sub in item.items.iterator %}
+                                                    <p>{{ sub.name }}</p>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </p>
+                                        <p class="h5">{{ item.actual_price }} UAH</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('.updateWishlist').click(function () {
+                updateWishlist($(this), 'both')
+            })
+        });
+    </script>
+{% endblock scripts %}

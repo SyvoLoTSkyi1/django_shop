@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${GUNICORN_PORT}:${GUNICORN_PORT}
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: gunicorn shop.wsgi
+    depends_on:
+      - db
+      - celery
+      - celery-beat
+      - memcached
+      - nginx
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6.2
+    restart: always
+
+  celery:
+    build: .
+    command: celery -A shop worker -l info
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    restart: always
+
+  celery-beat:
+    build: .
+    command: celery -A shop beat -l info
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    restart: always
+
+  memcached:
+    image: memcached:1.6
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./static:/app/static
+      - ./media:/app/media
+    env_file:
+      - .env
+    restart: always
+
+
+volumes:
+  postgres_data:

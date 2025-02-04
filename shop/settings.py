@@ -10,22 +10,33 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import environ
 from pathlib import Path
+
+from celery.schedules import crontab
+from django.urls import reverse_lazy
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l1nq$wg_n*1h%0qm5ig0t@n-xyf2nltxyf&54*q6x(uz@3=25i'  # noqa
+SECRET_KEY = env('SECRET_KEY', default='SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG', default=True)
+DOMAIN = env('DOMAIN', default='http://127.0.0.1:8000')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='').split(',')
 
 
 # Application definition
@@ -37,6 +48,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # external app
+    'django_extensions',
+    'django_celery_results',
+    'django_celery_beat',
+    'silk',
+    'widget_tweaks',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters',
+    # own apps
+    'config',
+    'items',
+    'orders',
+    'feedbacks',
+    'users',
+    'main',
+    'currencies',
+    'wishlist',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middleware.SilkyMiddleware'
 ]
 
 ROOT_URLCONF = 'shop.urls'
@@ -54,7 +85,7 @@ ROOT_URLCONF = 'shop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,6 +93,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'shop.context_processors.own_settings',
             ],
         },
     },
@@ -75,8 +107,12 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('POSTGRES_DB', default='POSTGRES_DB'),
+        'USER': env('POSTGRES_USER', default='POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD', default='POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST', default='127.0.0.1'),
+        'PORT': env('POSTGRES_PORT', default=5432),
     }
 }
 
@@ -99,6 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -118,8 +155,71 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static/'
+STATICFILES_DIRS = ['static_dev']
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGOUT_REDIRECT_URL = reverse_lazy('main')
+LOGIN_REDIRECT_URL = reverse_lazy('main')
+LOGIN_URL = reverse_lazy('login')
+
+
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = 'django_celery_results.backends.database.DatabaseBackend'  # noqa
+CELERY_IMPORTS = ('shop.tasks',)
+
+
+CELERY_BEAT_SCHEDULE = {
+    'Get currency': {
+        'task': 'currencies.tasks.get_currencies',
+        'schedule': crontab(hour='10', minute='1'),
+    },
+    'Update price': {
+        'task': 'items.tasks.update_price',
+        'schedule': crontab(hour='12', minute='1'),
+    },
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': env('MEMCACHE_LOCATION', default='MEMCACHE_LOCATION'),
+    }
+}
+
+AUTHENTICATION_BACKENDS = [
+    'users.backends.PhoneModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+'''
+host: EMAIL_HOST
+port: EMAIL_PORT
+username: EMAIL_HOST_USER
+password: EMAIL_HOST_PASSWORD
+use_tls: EMAIL_USE_TLS
+'''
+EMAIL_HOST = env('EMAIL_HOST', default='EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT', default='EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=True)
+
+ADMINS = [('Admin', env('ADMIN_EMAIL', default='ADMIN_EMAIL')), ]
+MANAGERS = ADMINS
+EMAIL_SUBJECT_PREFIX = 'Shop - '
+SERVER_EMAIL = EMAIL_HOST_USER
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api.authentication.TokenAuthentication',
+    ]
+}

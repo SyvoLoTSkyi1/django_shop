@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Order Details - {{ order.id }}
+{% endblock title %}
+
+{% block content %}
+<div class="order-details">
+    <h1>Order #{{ order.id }}</h1>
+    <p><strong>Date:</strong> {{ order.created_at }}</p>
+    <p><strong>Total:</strong> {{ order.total_amount }}</p>
+    {% if order.discount %}
+        <p><strong>Discount:</strong>
+            {{ order.discount.code }} {{ order.discount.amount|floatformat:0 }}
+            {% if order.discount.discount_type == 1 %}%{% else %}UAH{% endif %}</p>
+    {% endif %}
+    <p><strong>Status:</strong> {% if order.is_active %} Active {% else %} Paid {% endif %}</p>
+    
+    <h2>Items</h2>
+    <ul>
+        {% for item_relation in items_relation.iterator %}
+            <li>Name: {{ item_relation.item.name }} Quantity: ({{ item_relation.quantity }}) -
+                Size: {{ item_relation.size.name }} - Price: {{ item_relation.item.actual_price }} -
+                Amount: {{ item_relation.full_price }}</li>
+        {% endfor %}
+    </ul>
+    {% if not order.is_active %}
+    <h3>Delivery Details</h3>
+    <p><strong>Country:</strong> {{ order.user.country }}</p>
+    <p><strong>City:</strong> {{ order.user.country }}</p>
+    <p><strong>Address:</strong> {{ order.user.address }}</p>
+    {% endif %}
+</div>
+{% endblock content %}
