@@ -35,7 +35,7 @@ def send_verification_sms(user_id, phone):
     Generates a code, saves it in the cache and sends an SMS.
     """
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(id=user_id)  # noqa
     except User.DoesNotExist:
         logger.warning(f"User with ID {user_id} does not exist.")
         return

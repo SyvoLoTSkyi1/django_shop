@@ -5,6 +5,7 @@ from django.template import loader
 
 logger = logging.getLogger(__name__)
 
+
 def send_html_mail(subject_template_name, email_template_name, from_email,
                    to_email, context=None, html_email_template_name=None):
     """

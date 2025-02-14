@@ -264,13 +264,22 @@ def test_csv_file(db):
         content_type='image/jpeg'
     )
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_image:
+    with tempfile.NamedTemporaryFile(
+            delete=False,
+            suffix=".jpg") as temp_image:
         temp_image.write(image.read())
         image_path = temp_image.name
 
     csv_path = os.path.join(tempfile.gettempdir(), "test.csv")
     with open(csv_path, 'w', newline='') as file:
-        fieldnames = ['name', 'category', 'description', 'price', 'sku', 'image']
+        fieldnames = [
+            'name',
+            'category',
+            'description',
+            'price',
+            'sku',
+            'image'
+        ]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({
