@@ -1,6 +1,9 @@
+import logging
+
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 
+logger = logging.getLogger(__name__)
 
 def send_html_mail(subject_template_name, email_template_name, from_email,
                    to_email, context=None, html_email_template_name=None):
@@ -23,4 +26,5 @@ def send_html_mail(subject_template_name, email_template_name, from_email,
 
 
 def send_sms(phone: str, code: int):
-    print(f'Code {code} has sent to number {phone}')
+    # print(f'Code {code} has sent to number {phone}')
+    logger.info(f'Code {code} has sent to number {phone}')

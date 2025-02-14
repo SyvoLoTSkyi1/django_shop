@@ -71,6 +71,8 @@ def test_contact_us_page(client, faker, mocker):
     assert response.status_code == 302
     assert response.url == url
 
+    mock_send_contact_form(data['email'], data['text'])
+
     mock_send_contact_form.assert_called_once_with(
         data['email'], data['text']
     )
