@@ -40,9 +40,9 @@ class SignUpModelForm(UserCreationForm):
         if self.cleaned_data.get("phone") \
                 and not self.cleaned_data.get("email"):
             phone = self.cleaned_data.get("phone")
-            send_verification_sms.delay(user, phone)
+            send_verification_sms.delay(user.id, str(phone))
         else:
-            send_confirmation_email.delay(user)
+            send_confirmation_email.delay(user.id)
 
         return user
 

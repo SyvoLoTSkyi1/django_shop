@@ -1,11 +1,13 @@
 import csv
 import os
+import tempfile
 
 import factory
 import pprintpp
 import pytest
 from _decimal import Decimal
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django.utils import timezone
 from faker import Faker
@@ -254,13 +256,31 @@ def login_user_is_staff(db):
 
 @pytest.fixture(scope='function')
 def test_csv_file(db):
-    category = Category.objects.create(
-        name=fake.word()
-    )
-    with open('test.csv', 'w') as file:
-        fieldnames = ['name', 'category', 'description', 'price', 'sku']
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
+    category = Category.objects.create(name=fake.word())
 
+    image = SimpleUploadedFile(
+        name='test_image.jpg',
+        content=b'\x00' * 1024,
+        content_type='image/jpeg'
+    )
+
+    with tempfile.NamedTemporaryFile(
+            delete=False,
+            suffix=".jpg") as temp_image:
+        temp_image.write(image.read())
+        image_path = temp_image.name
+
+    csv_path = os.path.join(tempfile.gettempdir(), "test.csv")
+    with open(csv_path, 'w', newline='') as file:
+        fieldnames = [
+            'name',
+            'category',
+            'description',
+            'price',
+            'sku',
+            'image'
+        ]
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({
             'name': fake.name(),
@@ -272,7 +292,11 @@ def test_csv_file(db):
                 right_digits=DECIMAL_PLACES,
             ),
             'sku': fake.word(),
+            'image': image_path,
         })
-    with open('test.csv', 'r') as file:
+
+    with open(csv_path, 'r') as file:
         yield file
-    os.remove(os.getcwd() + '/test.csv')
+
+    os.remove(csv_path)
+    os.remove(image_path)
