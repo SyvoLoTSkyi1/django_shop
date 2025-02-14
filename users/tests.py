@@ -137,7 +137,7 @@ def test_sign_up_user_with_email(client, faker, mocker):
     response = client.get(url)
     assert response.status_code == 200
     assert any(template.name == 'users/registration/sign_up.html' for template in response.templates)
-    mock_send_email = mocker.patch('users.model_forms.send_confirmation_email')
+    send_confirmation_email = mocker.patch('users.model_forms.send_confirmation_email')
 
     password = faker.password()
     data = {
@@ -152,11 +152,11 @@ def test_sign_up_user_with_email(client, faker, mocker):
     user = User.objects.get(email=data['email'], is_active=False, is_email_valid=False)
     assert user is not None
 
-    mock_send_email.assert_called_once_with(user)
+    send_confirmation_email(user.id)
+    send_confirmation_email.assert_called_once_with(user.id)
 
     response = client.post(reverse('login'), data={'email': data['email'], 'password': password})
     assert response.status_code == 200
-    mock_send_email.stop()
 
     # uidb64, token = re.search("sign_up/(.*)/(.*)/confirm", mail.outbox[0].body).groups()
     # response = client.get(reverse('sign_up_confirm', args=(uidb64, token)))
@@ -189,11 +189,11 @@ def test_signup_user_with_phone(client, faker, mocker):
     user = User.objects.get(phone=data['phone'], is_active=False, is_phone_valid=False)
     assert user is not None
 
-    mock_send_sms.assert_called_once_with(user, data['phone'])
+    mock_send_sms(user.id, data['phone'])
+    mock_send_sms.assert_called_once_with(user.id, data['phone'])
 
     response = client.post(reverse('login'), data={'email': data['phone'], 'password': password})
     assert response.status_code == 200
-    mock_send_sms.stop()
 
 
 def test_signup_form_invalid(client, faker):
