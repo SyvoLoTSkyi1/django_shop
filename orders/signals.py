@@ -1,7 +1,7 @@
-from django.db.models.signals import pre_save  # noqa
-from django.dispatch import receiver  # noqa
-
-from orders.models import Order  # noqa
+# from django.db.models.signals import pre_save  # noqa
+# from django.dispatch import receiver  # noqa
+#
+# from orders.models import Order  # noqa
 
 
 # @receiver(pre_save, sender=Order)
