@@ -43,7 +43,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Start Docker Containers
-        run: docker-compose up -d --build
+        run: docker compose up -d --build
 
       - name: Wait for services to be ready
         run: |
@@ -53,11 +53,11 @@ jobs:
         run: docker ps
 
       - name: Run health check
-        run: curl -f http://localhost || (docker-compose logs && exit 1)
+        run: curl -f http://localhost || (docker compose logs && exit 1)
 
       - name: Run Pytest inside container
-        run: docker-compose exec -T app pytest -v
+        run: docker compose exec -T app pytest -v
 
       - name: Stop and clean up containers
         if: always()
-        run: docker-compose down
+        run: docker compose down
